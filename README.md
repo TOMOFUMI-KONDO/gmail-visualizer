@@ -40,7 +40,7 @@ php artisan serve
 npm run watch-poll
 ```
 
-# 設定ファイル(.env)
+## 設定ファイル(.env)
 
 githubにはセキュリティ上.envファイルをアップロードしていないのでSlackでアップロードしているファイルをダウンロードしてルートディレクト直下(laravelAppの直下)に.envファイルを配置してください
 
