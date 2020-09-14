@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
+//'api'以外から始まるルーティングを全てReactに投げる。
 Route::get('/{any}', function(){
-    return view('App');
-})->where('any', '.*');
+    return view('app');
+})->where('any', '^(?!api).*$');
