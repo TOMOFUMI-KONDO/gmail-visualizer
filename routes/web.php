@@ -30,4 +30,4 @@ Route::prefix('auth')->middleware('guest')->group(function() {
 //'api'以外から始まるルーティングを全てReactに投げる。
 Route::get('/{any}', function(){
     return view('app');
-})->where('any', '^(?!api).*$');
+})->where('any', '^(?!api).*$')->middleware('auth');

@@ -35,7 +35,8 @@ class OAuthController extends Controller
         // すでに会員になっている場合の処理を書く
         // そのままログインさせてもいいかもしれない
         if ($user->exists) {
-            abort(403);
+            Auth::login($user);
+            return redirect('/');
         }
 
         $user->name = $socialUser->getNickname();
