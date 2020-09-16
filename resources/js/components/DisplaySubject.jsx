@@ -12,6 +12,7 @@ const useStyles = makeStyles({
 
 function DisplaySubject(props) {
     const classes = useStyles();
+
     const eachSub = props.sbj;
     const eachBody = props.eachBody;
     const eachSub_temp = props.eachSub_temp;

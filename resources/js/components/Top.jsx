@@ -36,26 +36,37 @@ function Top() {
         window.gapi.auth2.getAuthInstance().signOut();
     };
 
-    const getMails = () => {
-        gmailApi.getMessages(false, 10, "me").then((response) => {
-            const mails = gmailApi.normalizeData(response).map((mail) => {
-                const date = new Date(mail.date);
+    const getMails = async () => {
+        const response = await gmailApi.getMessages(false, 30, "me");
 
-                return {
-                    from: mail.from,
-                    to: "",
-                    date: mail.date,
-                    year: date.getFullYear(),
-                    month: date.getMonth(),
-                    day: date.getDate(),
-                    dayoftheweek: date.getDay(),
-                    cc: "",
-                    Subject: [mail.subject],
-                    Body: [mail.body.text],
-                };
-            });
-            setMails(mails);
+        let mails = gmailApi.normalizeData(response).map((mail) => {
+            const date = new Date(mail.date);
+            return {
+                from: mail.from,
+                year: date.getFullYear(),
+                month: date.getMonth(),
+                day: date.getDate(),
+                Subject: [mail.subject],
+                Body: [mail.body.text],
+            };
         });
+
+        mails.sort((a, b) => {
+            return a.from > b.from ? 1 : -1;
+        });
+
+        let organized_mails = [mails[0]];
+        mails.slice(1).forEach((mail) => {
+            const last_index = organized_mails.length - 1;
+            if (mail.from === organized_mails[last_index].from) {
+                organized_mails[last_index].Subject.push(mail.Subject[0]);
+                organized_mails[last_index].Body.push(mail.Body[0]);
+            } else {
+                organized_mails.push(mail);
+            }
+        });
+
+        setMails(organized_mails);
     };
 
     return (

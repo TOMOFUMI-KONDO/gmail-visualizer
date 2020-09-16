@@ -3,6 +3,7 @@ import EachMail from "./EachMail";
 
 function MakeMailTree(props) {
     const mailtp = props.mailtp;
+
     const setNowBody = props.setNowBody;
     const tp = mailtp.map((mail) => <EachMail key={mail} mail={mail} setNowBody={setNowBody} />);
 
