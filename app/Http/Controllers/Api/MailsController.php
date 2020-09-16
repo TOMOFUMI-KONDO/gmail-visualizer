@@ -36,6 +36,7 @@ class MailsController extends Controller
         $user->month = $request->month;
         $user->year = $request->year;
         $user->dayoftheweek = $request->dayoftheweek;
+        $user->save();
     }
 
     /**
