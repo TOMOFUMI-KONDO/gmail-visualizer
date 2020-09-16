@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import SplitPane from "react-split-pane";
 import Typography from "@material-ui/core/Typography";
 import MakeMailTree from "./MakeMailTree";
@@ -15,14 +15,13 @@ const useStyles = makeStyles({
 function MakeTree(props) {
     const classes = useStyles();
     const mails = props.mails;
-    const [nowBody, setNowBody] = useState("");
-    const mailTrees = <MakeMailTree mailtp={mails} setNowBody={setNowBody} />;
+    const mailTrees = <MakeMailTree mailtp={mails} />;
 
     const layout = (
         <SplitPane className="split" split="vertical" minSize={200} defaultSize={500} maxSize={1000}>
             {mailTrees}
             <Typography className={classes.content} variant="h5" component="h3">
-                {nowBody}
+                This is a sheet of paper.
             </Typography>
         </SplitPane>
     );
