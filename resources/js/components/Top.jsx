@@ -131,6 +131,7 @@ function Top() {
                 const date = new Date(mail.date);
 
                 const mailObject = {
+                    emailId: mail.id,
                     from: mail.from,
                     to: "",
                     date: mail.date,
@@ -152,21 +153,23 @@ function Top() {
     };
 
     const saveMails = (payload) => {
-        axios("/api/add", {
-            from: payload.from,
-            to: payload.to,
-            date: payload.date,
-            year: payload.year,
-            month: payload.month,
-            day: payload.day,
-            dayoftheweek: payload.dayoftheweek,
-            body: payload.Body,
-        })
+        axios
+            .post("/api/add", {
+                emailId: payload.emailId,
+                from: payload.from,
+                to: payload.to,
+                date: payload.date,
+                year: payload.year,
+                month: payload.month,
+                day: payload.day,
+                dayoftheweek: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][payload.dayoftheweek],
+                body: payload.Body,
+            })
             .then(() => {
                 console.log("success!");
             })
             .catch((error) => {
-                console.log(error);
+                console.log(error.message);
             });
     };
 

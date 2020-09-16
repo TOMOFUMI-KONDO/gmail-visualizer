@@ -16,9 +16,16 @@ class CreateMailsTable extends Migration
     {
         Schema::create('mails', function (Blueprint $table) {
             $table->id();
+            $table->string('emailId');
+            $table->string('title');
+            $table->string('body', 12000);
             $table->string('from');
-            $table->datetime('received_at')->default(Carbon::now());
-            $table->string('body');
+            $table->string('to');
+            $table->string('date');
+            $table->integer('day');
+            $table->string('month');
+            $table->integer('year');
+            $table->string('dayoftheweek');
             $table->timestamps();
         });
     }
