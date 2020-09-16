@@ -6,10 +6,10 @@ const GlobalNav = () => {
         <nav>
             <ul>
                 <Link to="/">
-                    <li>Top</li>
+                    <li>top</li>
                 </Link>
                 <Link to="/about">
-                    <li>About</li>
+                    <li>about</li>
                 </Link>
             </ul>
         </nav>
