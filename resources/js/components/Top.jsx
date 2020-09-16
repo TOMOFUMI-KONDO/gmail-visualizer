@@ -8,6 +8,7 @@ import TreeItem from "@material-ui/lab/TreeItem";
 import Typography from "@material-ui/core/Typography";
 import SplitPane from "react-split-pane";
 //import { Divider } from "@material-ui/core";
+//import "./top.css";
 
 const mail = {
     from: "A",
@@ -109,9 +110,9 @@ function MakeTree(props) {
 
 function Top() {
     return (
-        <div className="mailTree">
-            <MakeTree mails={mailList} />
-        </div>
+        // <div className="mailTree" style="fontsize:20px">
+        <MakeTree mails={mailList} />
+        //</div>
     );
 }
 

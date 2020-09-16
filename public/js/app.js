@@ -87156,6 +87156,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
  //import { Divider } from "@material-ui/core";
+//import "./top.css";
 
 var mail = {
   from: "A",
@@ -87267,7 +87268,8 @@ function MakeTree(props) {
 
 function Top() {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "mailTree"
+    className: "mailTree",
+    style: "fontsize:20px"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(MakeTree, {
     mails: mailList
   }));
