@@ -5,6 +5,7 @@ import TreeView from "@material-ui/lab/TreeView";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
+
 //import SplitPane from "react-split-pane";
 
 
@@ -18,23 +19,28 @@ const mail = {
     dayoftheweek: "Thu",
     cc: "B",
     Subject: ["Test1","Test2","Test3","Test4"],
-    Body: ["....","....","....","...."]
+    Body: ["Hello1","Hello2","Hello3","Hello4"]
 };
 
 const mailList = [mail, mail, mail, mail];
 
 var count = 1;
 
+
 function Clicked() {
   console.log("clicked" + count.toString());
+  //const sample = props.labe;
+  //console.log("clicked" + sample);
   count++;
 }
 
 
 function DisplaySubject(props) {
     const eachSub = props.sbj;
+
     const result = (
       //keyはSubject名にした
+      //<TreeItem nodeId={eachSub} label={eachSub} onLabelClick={<Clicked labe="A"/>} />
       <TreeItem nodeId={eachSub} label={eachSub} onLabelClick={Clicked} />
     );
     return result;
@@ -91,10 +97,9 @@ function EachMail(props) {
 function Top(){
 
     return <MakeTree mails={mailList} />;
-
-
-
 }
+
+
 
 
 

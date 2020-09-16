@@ -26474,13 +26474,15 @@ var mail = {
   dayoftheweek: "Thu",
   cc: "B",
   Subject: ["Test1", "Test2", "Test3", "Test4"],
-  Body: ["....", "....", "....", "...."]
+  Body: ["Hello1", "Hello2", "Hello3", "Hello4"]
 };
 var mailList = [mail, mail, mail, mail];
 var count = 1;
 
 function Clicked() {
-  console.log("clicked" + count.toString());
+  console.log("clicked" + count.toString()); //const sample = props.labe;
+  //console.log("clicked" + sample);
+
   count++;
 }
 
@@ -26489,6 +26491,7 @@ function DisplaySubject(props) {
   var result =
   /*#__PURE__*/
   //keyはSubject名にした
+  //<TreeItem nodeId={eachSub} label={eachSub} onLabelClick={<Clicked labe="A"/>} />
   react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_6__["default"], {
     nodeId: eachSub,
     label: eachSub,
