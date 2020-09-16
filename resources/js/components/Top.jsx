@@ -7,17 +7,18 @@ import TreeItem from "@material-ui/lab/TreeItem";
 import SplitPane from "react-split-pane";
 import gmailApi from "react-gmail";
 
-var count = 1;
-
-function Clicked() {
-    console.log("clicked" + count.toString());
-    //const sample = props.labe;
-    //console.log("clicked" + sample);
-    count++;
-}
-
 function DisplaySubject(props) {
     const eachSub = props.sbj;
+    const eachBody = props.body;
+    const eachSub_temp = props.eachSub_temp;
+    const setNowBody = props.setNowBody;
+    const index = eachSub_temp.findIndex((item) => item === eachSub);
+
+    function Clicked(e) {
+        e.preventDefault();
+        console.log(eachBody[index]);
+        setNowBody(eachBody[index]);
+    }
 
     const result = (
         //keyはSubject名にした
@@ -29,7 +30,12 @@ function DisplaySubject(props) {
 
 function EachMail(props) {
     const each = props.mail;
-    const eachSub = each.Subject.map((sub) => <DisplaySubject key={sub} sbj={sub} />);
+    const eachBody = each.Body;
+    const eachSub_temp = each.Subject;
+    const setNowBody = props.setNowBody;
+    const eachSub = each.Subject.map((sub) => (
+        <DisplaySubject key={sub} sbj={sub} body={eachBody} eachSub_temp={eachSub_temp} setNowBody={setNowBody} />
+    ));
     const mailIndex = (
         <TreeItem nodeId={each.from + "1"} label={each.from}>
             <TreeItem nodeId="2" label={each.year}>
@@ -67,7 +73,8 @@ function EachMail(props) {
 
 function MakeMailTree(props) {
     const mailtp = props.mailtp;
-    const tp = mailtp.map((mail) => <EachMail key={mail} mail={mail} />);
+    const setNowBody = props.setNowBody;
+    const tp = mailtp.map((mail) => <EachMail key={mail} mail={mail} setNowBody={setNowBody} />);
 
     const result = tp;
     return result;
@@ -76,14 +83,15 @@ function MakeMailTree(props) {
 function MakeTree(props) {
     const mails = props.mails;
     //const mailItems = mails.map((mail) => <EachMail mail={mail} />);
-    const mailTrees = <MakeMailTree mailtp={mails} />;
+    const [nowBody, setNowBody] = useState("");
+    const mailTrees = <MakeMailTree mailtp={mails} setNowBody={setNowBody} />;
 
     //return <EachMail mail={props.mailList} />;
     const layout = (
         <SplitPane split="vertical" minSize={200} defaultSize={500} maxSize={1000}>
             {mailTrees}
             <Typography variant="h5" component="h3">
-                This is a sheet of paper.
+                {nowBody}
             </Typography>
         </SplitPane>
     );
