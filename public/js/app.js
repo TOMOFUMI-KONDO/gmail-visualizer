@@ -69967,7 +69967,7 @@ var Top = function Top() {
       setMails = _useState2[1];
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    fetch("http://localhost:8000/api/" + "mails").then(function (response) {
+    fetch("http://localhost:8000/api/" + "get").then(function (response) {
       response.json().then(function (result) {
         return setMails(result);
       });

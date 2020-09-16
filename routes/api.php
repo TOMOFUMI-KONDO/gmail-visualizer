@@ -19,5 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['middleware' => ['api']], function () {
-    Route::apiResource('mails', 'App\Http\Controllers\Api\MailsController')->only(['index']);
+    Route::get('get', 'App\Http\Controllers\Api\MailsController@getMails');
+    Route::post('add', 'App\Http\Controllers\Api\MailsController@addMails');
 });

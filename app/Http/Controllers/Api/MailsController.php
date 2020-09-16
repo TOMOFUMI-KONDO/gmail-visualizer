@@ -13,7 +13,7 @@ class MailsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function getMails()
     {
         return Mail::all();
     }
@@ -24,9 +24,18 @@ class MailsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function addMails(Request $request)
     {
-        //
+        $user = Mail::firstOrNew(['emailId' => $request->emailId]);
+        $user->from = $request->from;
+        $user->to = $request->to;
+        $user->title = $request->title;
+        $user->body = $request->body;
+        $user->date = $request->date;
+        $user->day = $request->day;
+        $user->month = $request->month;
+        $user->year = $request->year;
+        $user->dayoftheweek = $request->dayoftheweek;
     }
 
     /**

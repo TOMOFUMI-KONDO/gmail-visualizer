@@ -4,7 +4,7 @@ const Top = () => {
     const [mails, setMails] = useState([]);
 
     useEffect(() => {
-        fetch(process.env.MIX_API_URL + "mails")
+        fetch(process.env.MIX_API_URL + "get")
             .then((response) => {
                 response.json().then((result) => setMails(result));
             })
