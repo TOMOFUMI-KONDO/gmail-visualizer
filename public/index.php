@@ -1,3 +1,6 @@
+<!-- googleAPIのインポート -->
+<script src="https://apis.google.com/js/api.js"></script>
+
 <?php
 
 use Illuminate\Contracts\Http\Kernel;
