@@ -87101,6 +87101,117 @@ if (document.getElementById("app")) {
 
 /***/ }),
 
+/***/ "./resources/js/components/DisplaySubject.jsx":
+/*!****************************************************!*\
+  !*** ./resources/js/components/DisplaySubject.jsx ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @material-ui/lab/TreeItem */ "./node_modules/@material-ui/lab/esm/TreeItem/index.js");
+
+
+var count = 1;
+
+function Clicked() {
+  console.log("clicked" + count.toString()); //const sample = props.labe;
+  //console.log("clicked" + sample);
+
+  count++;
+}
+
+function DisplaySubject(props) {
+  var eachSub = props.sbj;
+  var result =
+  /*#__PURE__*/
+  //keyはSubject名にした
+  //<TreeItem nodeId={eachSub} label={eachSub} onLabelClick={<Clicked labe="A"/>} />
+  react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    nodeId: eachSub,
+    label: eachSub,
+    onLabelClick: Clicked
+  });
+  return result;
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (DisplaySubject);
+
+/***/ }),
+
+/***/ "./resources/js/components/EachMail.jsx":
+/*!**********************************************!*\
+  !*** ./resources/js/components/EachMail.jsx ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _DisplaySubject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DisplaySubject */ "./resources/js/components/DisplaySubject.jsx");
+/* harmony import */ var _material_ui_lab_TreeView__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @material-ui/lab/TreeView */ "./node_modules/@material-ui/lab/esm/TreeView/index.js");
+/* harmony import */ var _material_ui_icons_ExpandMore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @material-ui/icons/ExpandMore */ "./node_modules/@material-ui/icons/ExpandMore.js");
+/* harmony import */ var _material_ui_icons_ExpandMore__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_material_ui_icons_ExpandMore__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @material-ui/icons/ChevronRight */ "./node_modules/@material-ui/icons/ChevronRight.js");
+/* harmony import */ var _material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @material-ui/lab/TreeItem */ "./node_modules/@material-ui/lab/esm/TreeItem/index.js");
+
+
+
+
+
+
+
+function EachMail(props) {
+  var each = props.mail;
+  var eachSub = each.Subject.map(function (sub) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_DisplaySubject__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      key: sub,
+      sbj: sub
+    });
+  });
+  var mailIndex = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    nodeId: each.from + "1",
+    label: each.from
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    nodeId: "2",
+    label: each.year
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    nodeId: "3",
+    label: each.month
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    nodeId: "4",
+    label: each.day
+  }, eachSub))));
+  var result =
+  /*#__PURE__*/
+  //<SplitPane split="vertical" minSize={200} defaultSize={200} maxSize={400}>
+  react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeView__WEBPACK_IMPORTED_MODULE_2__["default"] //className={classes.root}
+  , {
+    defaultCollapseIcon: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_ExpandMore__WEBPACK_IMPORTED_MODULE_3___default.a, null),
+    defaultExpandIcon: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_4___default.a, null)
+  }, mailIndex)
+  /*<TreeView
+  //className={classes.root}
+  defaultCollapseIcon={<ExpandMoreIcon />}
+  defaultExpandIcon={<ChevronRightIcon />}
+  >
+  {mailIndex}
+  </TreeView>*/
+  //</SplitPane>
+  ;
+  return result;
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (EachMail);
+
+/***/ }),
+
 /***/ "./resources/js/components/GlobalNav.jsx":
 /*!***********************************************!*\
   !*** ./resources/js/components/GlobalNav.jsx ***!
@@ -87128,6 +87239,79 @@ var GlobalNav = function GlobalNav() {
 
 /***/ }),
 
+/***/ "./resources/js/components/MakeMailTree.jsx":
+/*!**************************************************!*\
+  !*** ./resources/js/components/MakeMailTree.jsx ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _EachMail__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EachMail */ "./resources/js/components/EachMail.jsx");
+
+
+
+function MakeMailTree(props) {
+  var mailtp = props.mailtp;
+  var tp = mailtp.map(function (mail) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_EachMail__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      key: mail,
+      mail: mail
+    });
+  });
+  var result = tp;
+  return result;
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (MakeMailTree);
+
+/***/ }),
+
+/***/ "./resources/js/components/MakeTree.jsx":
+/*!**********************************************!*\
+  !*** ./resources/js/components/MakeTree.jsx ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_split_pane__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-split-pane */ "./node_modules/react-split-pane/dist/index.esm.js");
+/* harmony import */ var _material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @material-ui/core/Typography */ "./node_modules/@material-ui/core/esm/Typography/index.js");
+/* harmony import */ var _MakeMailTree__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MakeMailTree */ "./resources/js/components/MakeMailTree.jsx");
+
+
+
+
+
+function MakeTree(props) {
+  var mails = props.mails; //const mailItems = mails.map((mail) => <EachMail mail={mail} />);
+
+  var mailTrees = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MakeMailTree__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    mailtp: mails
+  }); //return <EachMail mail={props.mailList} />;
+
+  var layout = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_split_pane__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    split: "vertical",
+    minSize: 200,
+    defaultSize: 500,
+    maxSize: 1000
+  }, mailTrees, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    variant: "h5",
+    component: "h3"
+  }, "This is a sheet of paper."));
+  return layout;
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (MakeTree);
+
+/***/ }),
+
 /***/ "./resources/js/components/Top.jsx":
 /*!*****************************************!*\
   !*** ./resources/js/components/Top.jsx ***!
@@ -87145,18 +87329,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @material-ui/icons/ChevronRight */ "./node_modules/@material-ui/icons/ChevronRight.js");
 /* harmony import */ var _material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @material-ui/lab/TreeItem */ "./node_modules/@material-ui/lab/esm/TreeItem/index.js");
-/* harmony import */ var _material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @material-ui/core/Typography */ "./node_modules/@material-ui/core/esm/Typography/index.js");
-/* harmony import */ var react_split_pane__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-split-pane */ "./node_modules/react-split-pane/dist/index.esm.js");
+/* harmony import */ var _MakeTree__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./MakeTree */ "./resources/js/components/MakeTree.jsx");
  //import ReactDOM from "react-dom";
 //import { makeStyles } from "@material-ui/core/styles";
 
 
 
 
-
-
- //import { Divider } from "@material-ui/core";
+ //import Typography from "@material-ui/core/Typography";
+//import SplitPane from "react-split-pane";
+//import { Divider } from "@material-ui/core";
 //import "./top.css";
+
 
 var mail = {
   from: "A",
@@ -87171,108 +87355,16 @@ var mail = {
   Body: ["Hello1", "Hello2", "Hello3", "Hello4"]
 };
 var mailList = [mail, mail, mail, mail];
-var count = 1;
-
-function Clicked() {
-  console.log("clicked" + count.toString()); //const sample = props.labe;
-  //console.log("clicked" + sample);
-
-  count++;
-}
-
-function DisplaySubject(props) {
-  var eachSub = props.sbj;
-  var result =
-  /*#__PURE__*/
-  //keyはSubject名にした
-  //<TreeItem nodeId={eachSub} label={eachSub} onLabelClick={<Clicked labe="A"/>} />
-  react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    nodeId: eachSub,
-    label: eachSub,
-    onLabelClick: Clicked
-  });
-  return result;
-}
-
-function EachMail(props) {
-  var each = props.mail;
-  var eachSub = each.Subject.map(function (sub) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(DisplaySubject, {
-      key: sub,
-      sbj: sub
-    });
-  });
-  var mailIndex = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    nodeId: each.from + "1",
-    label: each.from
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    nodeId: "2",
-    label: each.year
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    nodeId: "3",
-    label: each.month
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    nodeId: "4",
-    label: each.day
-  }, eachSub))));
-  var result =
-  /*#__PURE__*/
-  //<SplitPane split="vertical" minSize={200} defaultSize={200} maxSize={400}>
-  react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeView__WEBPACK_IMPORTED_MODULE_1__["default"] //className={classes.root}
-  , {
-    defaultCollapseIcon: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_ExpandMore__WEBPACK_IMPORTED_MODULE_2___default.a, null),
-    defaultExpandIcon: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_3___default.a, null)
-  }, mailIndex)
-  /*<TreeView
-    //className={classes.root}
-  defaultCollapseIcon={<ExpandMoreIcon />}
-  defaultExpandIcon={<ChevronRightIcon />}
-  >
-  {mailIndex}
-  </TreeView>*/
-  //</SplitPane>
-  ;
-  return result;
-}
-
-function MakeMailTree(props) {
-  var mailtp = props.mailtp;
-  var tp = mailtp.map(function (mail) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(EachMail, {
-      key: mail,
-      mail: mail
-    });
-  });
-  var result = tp;
-  return result;
-}
-
-function MakeTree(props) {
-  var mails = props.mails; //const mailItems = mails.map((mail) => <EachMail mail={mail} />);
-
-  var mailTrees = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(MakeMailTree, {
-    mailtp: mails
-  }); //return <EachMail mail={props.mailList} />;
-
-  var layout = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_split_pane__WEBPACK_IMPORTED_MODULE_6__["default"], {
-    split: "vertical",
-    minSize: 200,
-    defaultSize: 500,
-    maxSize: 1000
-  }, mailTrees, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_5__["default"], {
-    variant: "h5",
-    component: "h3"
-  }, "This is a sheet of paper."));
-  return layout;
-}
 
 function Top() {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "mailTree",
-    style: "fontsize:20px"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(MakeTree, {
-    mails: mailList
-  }));
+  return (
+    /*#__PURE__*/
+    // <div className="mailTree" style="fontsize:20px">
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MakeTree__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      mails: mailList
+    }) //</div>
+
+  );
 } //const mailList = [mail, mail, mail, mail];
 //ReactDOM.render(<MakeTree mails={mailList} />, document.querySelector("#root"));
 
