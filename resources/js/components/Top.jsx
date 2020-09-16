@@ -1,27 +1,11 @@
-import React from "react";
-//import ReactDOM from "react-dom";
-//import { makeStyles } from "@material-ui/core/styles";
+import React, { useEffect, useState } from "react";
+import { Typography } from "@material-ui/core";
 import TreeView from "@material-ui/lab/TreeView";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
-import Typography from "@material-ui/core/Typography";
 import SplitPane from "react-split-pane";
-
-const mail = {
-    from: "A",
-    To: "C",
-    date: "Thu, 25 Dec 2014",
-    year: "2014",
-    month: "Dec",
-    day: "25",
-    dayoftheweek: "Thu",
-    cc: "B",
-    Subject: ["Test1", "Test2", "Test3", "Test4"],
-    Body: ["Hello1", "Hello2", "Hello3", "Hello4"],
-};
-
-const mailList = [mail, mail, mail, mail];
+import gmailApi from "react-gmail";
 
 var count = 1;
 
@@ -107,11 +91,70 @@ function MakeTree(props) {
 }
 
 function Top() {
-    return <MakeTree mails={mailList} />;
+    const [isSignedIn, setIsSignedIn] = useState(false);
+    const [mails, setMails] = useState([]);
+
+    useEffect(() => {
+        window.gapi.load("client:auth2", () => {
+            window.gapi.client
+                .init({
+                    clientId: "423210707146-0241ghoh3jao8v3t69ovp4c8dvnhgpmb.apps.googleusercontent.com",
+                    scope: "https://www.googleapis.com/auth/gmail.readonly",
+                })
+                .then(() => {
+                    const auth = window.gapi.auth2.getAuthInstance();
+                    setIsSignedIn(auth.isSignedIn.get());
+                });
+        });
+    }, []);
+
+    const renderAuth = () => {
+        if (isSignedIn) {
+            return <div>login with google!!</div>;
+        } else {
+            return <div>I can not see your google account!!</div>;
+        }
+    };
+
+    const loginWithGoogle = () => {
+        window.gapi.auth2.getAuthInstance().signIn();
+    };
+
+    const logoutFromGoogle = () => {
+        window.gapi.auth2.getAuthInstance().signOut();
+    };
+
+    const getMails = () => {
+        gmailApi.getMessages(false, 10, "me").then((response) => {
+            const mails = gmailApi.normalizeData(response).map((mail) => {
+                const date = new Date(mail.date);
+
+                return {
+                    from: mail.from,
+                    to: "",
+                    date: mail.date,
+                    year: date.getFullYear(),
+                    month: date.getMonth(),
+                    day: date.getDate(),
+                    dayoftheweek: date.getDay(),
+                    cc: "",
+                    Subject: [mail.subject],
+                    Body: [mail.body.text],
+                };
+            });
+            setMails(mails);
+        });
+    };
+
+    return (
+        <div>
+            <button onClick={getMails}>get mails</button>
+            {renderAuth()}
+            <button onClick={loginWithGoogle}>login with google</button>
+            <button onClick={logoutFromGoogle}>logout from google</button>
+            <MakeTree mails={mails} />
+        </div>
+    );
 }
-
-//const mailList = [mail, mail, mail, mail];
-
-//ReactDOM.render(<MakeTree mails={mailList} />, document.querySelector("#root"));
 
 export default Top;
