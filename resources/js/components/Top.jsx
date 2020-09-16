@@ -70,10 +70,10 @@ function EachMail(props) {
 
         /*<TreeView
           //className={classes.root}
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpandIcon={<ChevronRightIcon />}
+        defaultCollapseIcon={<ExpandMoreIcon />}
+        defaultExpandIcon={<ChevronRightIcon />}
         >
-          {mailIndex}
+        {mailIndex}
         </TreeView>*/
         //</SplitPane>
     );
