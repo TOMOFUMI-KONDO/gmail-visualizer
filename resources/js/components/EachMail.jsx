@@ -34,7 +34,12 @@ function EachMail(props) {
     const classes = useStyles();
 
     const each = props.mail;
-    const eachSub = each.Subject.map((sub) => <DisplaySubject key={sub} sbj={sub} />);
+    const eachBody = each.Body;
+    const eachSub_temp = each.Subject;
+    const setNowBody = props.setNowBody;
+    const eachSub = each.Subject.map((sub) => (
+        <DisplaySubject key={sub} sbj={sub} setNowBody={setNowBody} eachBody={eachBody} eachSub_temp={eachSub_temp} />
+    ));
     const mailIndex = (
         <TreeItem className={classes.person} nodeId={each.from + "1"} label={each.from}>
             <TreeItem className={classes.year} nodeId="2" label={each.year}>

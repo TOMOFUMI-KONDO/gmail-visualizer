@@ -87085,13 +87085,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var count = 1;
-
-function Clicked() {
-  console.log("clicked" + count.toString());
-  count++;
-}
-
 var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__["makeStyles"])({
   content: {
     fontSize: "10px",
@@ -87103,6 +87096,19 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__["ma
 function DisplaySubject(props) {
   var classes = useStyles();
   var eachSub = props.sbj;
+  var eachBody = props.eachBody;
+  var eachSub_temp = props.eachSub_temp;
+  var setNowBody = props.setNowBody;
+  var index = eachSub_temp.findIndex(function (item) {
+    return item === eachSub;
+  });
+
+  function Clicked(e) {
+    e.preventDefault();
+    console.log(eachBody[index]);
+    setNowBody(eachBody[index]);
+  }
+
   var result =
   /*#__PURE__*/
   //keyはSubject名にした
@@ -87171,10 +87177,16 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_6__["ma
 function EachMail(props) {
   var classes = useStyles();
   var each = props.mail;
+  var eachBody = each.Body;
+  var eachSub_temp = each.Subject;
+  var setNowBody = props.setNowBody;
   var eachSub = each.Subject.map(function (sub) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_DisplaySubject__WEBPACK_IMPORTED_MODULE_1__["default"], {
       key: sub,
-      sbj: sub
+      sbj: sub,
+      setNowBody: setNowBody,
+      eachBody: eachBody,
+      eachSub_temp: eachSub_temp
     });
   });
   var mailIndex = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_5__["default"], {
@@ -87222,10 +87234,12 @@ __webpack_require__.r(__webpack_exports__);
 
 function MakeMailTree(props) {
   var mailtp = props.mailtp;
+  var setNowBody = props.setNowBody;
   var tp = mailtp.map(function (mail) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_EachMail__WEBPACK_IMPORTED_MODULE_1__["default"], {
       key: mail,
-      mail: mail
+      mail: mail,
+      setNowBody: setNowBody
     });
   });
   var result = tp;
@@ -87251,6 +87265,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @material-ui/core/Typography */ "./node_modules/@material-ui/core/esm/Typography/index.js");
 /* harmony import */ var _MakeMailTree__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MakeMailTree */ "./resources/js/components/MakeMailTree.jsx");
 /* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 
 
 
@@ -87267,8 +87293,15 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__["ma
 function MakeTree(props) {
   var classes = useStyles();
   var mails = props.mails;
+
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(""),
+      _useState2 = _slicedToArray(_useState, 2),
+      nowBody = _useState2[0],
+      setNowBody = _useState2[1];
+
   var mailTrees = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MakeMailTree__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    mailtp: mails
+    mailtp: mails,
+    setNowBody: setNowBody
   });
   var layout = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_split_pane__WEBPACK_IMPORTED_MODULE_1__["default"], {
     className: "split",
@@ -87280,7 +87313,7 @@ function MakeTree(props) {
     className: classes.content,
     variant: "h5",
     component: "h3"
-  }, "This is a sheet of paper."));
+  }, nowBody));
   return layout;
 }
 
@@ -87297,10 +87330,10 @@ function MakeTree(props) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _MakeTree__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MakeTree */ "./resources/js/components/MakeTree.jsx");
-/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
+/* harmony import */ var _MakeTree__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MakeTree */ "./resources/js/components/MakeTree.jsx");
+/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
 
 
 
@@ -87317,7 +87350,7 @@ var mail = {
   Body: ["Hello1", "Hello2", "Hello3", "Hello4"]
 };
 var mailList = [mail, mail, mail, mail];
-var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__["makeStyles"])({
+var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_1__["makeStyles"])({
   root: {
     backgroundColor: "red"
   }
@@ -87325,9 +87358,9 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__["ma
 
 function Top() {
   var classes = useStyles();
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
     className: classes.root
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MakeTree__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_MakeTree__WEBPACK_IMPORTED_MODULE_0__["default"], {
     mails: mailList
   }));
 }
@@ -87354,8 +87387,8 @@ function Top() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/shimalab/watanabe/ハッカソン2/gmail-visualizer/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/shimalab/watanabe/ハッカソン2/gmail-visualizer/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/suehiroyusuke/Documents/GitHub/gmail-visualizer/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/suehiroyusuke/Documents/GitHub/gmail-visualizer/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
