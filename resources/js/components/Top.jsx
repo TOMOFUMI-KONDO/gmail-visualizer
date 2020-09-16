@@ -129,7 +129,7 @@ function Top() {
             const mails = gmailApi.normalizeData(response).map((mail) => {
                 const date = new Date(mail.date);
 
-                return {
+                const mailObject = {
                     from: mail.from,
                     to: "",
                     date: mail.date,
@@ -141,10 +141,33 @@ function Top() {
                     Subject: [mail.subject],
                     Body: [mail.body.text],
                 };
+
+                saveMails(mailObject);
+
+                return mailObject;
             });
             setMails(mails);
         });
     };
+
+    const saveMails = (payload) => {
+        axios("/api/add", {
+            from: payload.from,
+            to: payload.to,
+            date: payload.date,
+            year: payload.year,
+            month: payload.month,
+            day: payload.day,
+            dayoftheweek: payload.dayoftheweek,
+            body: payload.Body,
+        })
+        .then(() => {
+            console.log("success!")
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
 
     return (
         <div>
