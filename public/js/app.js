@@ -87039,27 +87039,6 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
-/***/ "./resources/js/components/About.jsx":
-/*!*******************************************!*\
-  !*** ./resources/js/components/About.jsx ***!
-  \*******************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-
-
-var About = function About() {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "About");
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (About);
-
-/***/ }),
-
 /***/ "./resources/js/components/App.jsx":
 /*!*****************************************!*\
   !*** ./resources/js/components/App.jsx ***!
@@ -87074,25 +87053,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
-/* harmony import */ var _GlobalNav__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./GlobalNav */ "./resources/js/components/GlobalNav.jsx");
-/* harmony import */ var _Top__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Top */ "./resources/js/components/Top.jsx");
-/* harmony import */ var _About__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./About */ "./resources/js/components/About.jsx");
-
-
+/* harmony import */ var _Top__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Top */ "./resources/js/components/Top.jsx");
 
 
 
 
 
 var App = function App() {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["BrowserRouter"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GlobalNav__WEBPACK_IMPORTED_MODULE_3__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Switch"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
-    path: "/",
-    exact: true,
-    component: _Top__WEBPACK_IMPORTED_MODULE_4__["default"]
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
-    path: "/about",
-    component: _About__WEBPACK_IMPORTED_MODULE_5__["default"]
-  }))));
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["BrowserRouter"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Top__WEBPACK_IMPORTED_MODULE_3__["default"], null)));
 };
 
 if (document.getElementById("app")) {
@@ -87113,24 +87081,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @material-ui/lab/TreeItem */ "./node_modules/@material-ui/lab/esm/TreeItem/index.js");
+/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
+
 
 
 var count = 1;
 
 function Clicked() {
-  console.log("clicked" + count.toString()); //const sample = props.labe;
-  //console.log("clicked" + sample);
-
+  console.log("clicked" + count.toString());
   count++;
 }
 
+var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__["makeStyles"])({
+  content: {
+    fontSize: "10px",
+    backgroundColor: "white",
+    color: "black"
+  }
+});
+
 function DisplaySubject(props) {
+  var classes = useStyles();
   var eachSub = props.sbj;
   var result =
   /*#__PURE__*/
   //keyはSubject名にした
-  //<TreeItem nodeId={eachSub} label={eachSub} onLabelClick={<Clicked labe="A"/>} />
   react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    className: classes.content,
     nodeId: eachSub,
     label: eachSub,
     onLabelClick: Clicked
@@ -87160,14 +87137,39 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @material-ui/icons/ChevronRight */ "./node_modules/@material-ui/icons/ChevronRight.js");
 /* harmony import */ var _material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @material-ui/lab/TreeItem */ "./node_modules/@material-ui/lab/esm/TreeItem/index.js");
+/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
 
 
 
 
 
 
+
+var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_6__["makeStyles"])({
+  person: {
+    padding: "5px",
+    fontSize: "50px",
+    backgroundColor: "red"
+  },
+  year: {
+    padding: "5px",
+    fontSize: "25px",
+    backgroundColor: "green"
+  },
+  month: {
+    padding: "5px",
+    fontSize: "15px",
+    backgroundColor: "yellow"
+  },
+  day: {
+    padding: "5px",
+    fontSize: "8px",
+    backgroundColor: "blue"
+  }
+});
 
 function EachMail(props) {
+  var classes = useStyles();
   var each = props.mail;
   var eachSub = each.Subject.map(function (sub) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_DisplaySubject__WEBPACK_IMPORTED_MODULE_1__["default"], {
@@ -87176,66 +87178,30 @@ function EachMail(props) {
     });
   });
   var mailIndex = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    className: classes.person,
     nodeId: each.from + "1",
     label: each.from
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    className: classes.year,
     nodeId: "2",
     label: each.year
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    className: classes.month,
     nodeId: "3",
     label: each.month
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    className: classes.day,
     nodeId: "4",
     label: each.day
   }, eachSub))));
-  var result =
-  /*#__PURE__*/
-  //<SplitPane split="vertical" minSize={200} defaultSize={200} maxSize={400}>
-  react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeView__WEBPACK_IMPORTED_MODULE_2__["default"] //className={classes.root}
-  , {
+  var result = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_lab_TreeView__WEBPACK_IMPORTED_MODULE_2__["default"], {
     defaultCollapseIcon: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_ExpandMore__WEBPACK_IMPORTED_MODULE_3___default.a, null),
     defaultExpandIcon: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_4___default.a, null)
-  }, mailIndex)
-  /*<TreeView
-  //className={classes.root}
-  defaultCollapseIcon={<ExpandMoreIcon />}
-  defaultExpandIcon={<ChevronRightIcon />}
-  >
-  {mailIndex}
-  </TreeView>*/
-  //</SplitPane>
-  ;
+  }, mailIndex);
   return result;
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (EachMail);
-
-/***/ }),
-
-/***/ "./resources/js/components/GlobalNav.jsx":
-/*!***********************************************!*\
-  !*** ./resources/js/components/GlobalNav.jsx ***!
-  \***********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
-
-
-
-var GlobalNav = function GlobalNav() {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("nav", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
-    to: "/"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, "top")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
-    to: "/about"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, "about"))));
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (GlobalNav);
 
 /***/ }),
 
@@ -87284,24 +87250,34 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_split_pane__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-split-pane */ "./node_modules/react-split-pane/dist/index.esm.js");
 /* harmony import */ var _material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @material-ui/core/Typography */ "./node_modules/@material-ui/core/esm/Typography/index.js");
 /* harmony import */ var _MakeMailTree__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MakeMailTree */ "./resources/js/components/MakeMailTree.jsx");
+/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
 
 
 
 
+
+var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__["makeStyles"])({
+  content: {
+    borderLeft: "1px solid black",
+    padding: "10px 0px 100vh 10px",
+    backgroundColor: "white"
+  }
+});
 
 function MakeTree(props) {
-  var mails = props.mails; //const mailItems = mails.map((mail) => <EachMail mail={mail} />);
-
+  var classes = useStyles();
+  var mails = props.mails;
   var mailTrees = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MakeMailTree__WEBPACK_IMPORTED_MODULE_3__["default"], {
     mailtp: mails
-  }); //return <EachMail mail={props.mailList} />;
-
+  });
   var layout = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_split_pane__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    className: "split",
     split: "vertical",
     minSize: 200,
     defaultSize: 500,
     maxSize: 1000
   }, mailTrees, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    className: classes.content,
     variant: "h5",
     component: "h3"
   }, "This is a sheet of paper."));
@@ -87323,23 +87299,9 @@ function MakeTree(props) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _material_ui_lab_TreeView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @material-ui/lab/TreeView */ "./node_modules/@material-ui/lab/esm/TreeView/index.js");
-/* harmony import */ var _material_ui_icons_ExpandMore__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @material-ui/icons/ExpandMore */ "./node_modules/@material-ui/icons/ExpandMore.js");
-/* harmony import */ var _material_ui_icons_ExpandMore__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_material_ui_icons_ExpandMore__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @material-ui/icons/ChevronRight */ "./node_modules/@material-ui/icons/ChevronRight.js");
-/* harmony import */ var _material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _material_ui_lab_TreeItem__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @material-ui/lab/TreeItem */ "./node_modules/@material-ui/lab/esm/TreeItem/index.js");
-/* harmony import */ var _MakeTree__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./MakeTree */ "./resources/js/components/MakeTree.jsx");
- //import ReactDOM from "react-dom";
-//import { makeStyles } from "@material-ui/core/styles";
+/* harmony import */ var _MakeTree__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MakeTree */ "./resources/js/components/MakeTree.jsx");
+/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
 
-
-
-
- //import Typography from "@material-ui/core/Typography";
-//import SplitPane from "react-split-pane";
-//import { Divider } from "@material-ui/core";
-//import "./top.css";
 
 
 var mail = {
@@ -87355,19 +87317,20 @@ var mail = {
   Body: ["Hello1", "Hello2", "Hello3", "Hello4"]
 };
 var mailList = [mail, mail, mail, mail];
+var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__["makeStyles"])({
+  root: {
+    backgroundColor: "red"
+  }
+});
 
 function Top() {
-  return (
-    /*#__PURE__*/
-    // <div className="mailTree" style="fontsize:20px">
-    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MakeTree__WEBPACK_IMPORTED_MODULE_5__["default"], {
-      mails: mailList
-    }) //</div>
-
-  );
-} //const mailList = [mail, mail, mail, mail];
-//ReactDOM.render(<MakeTree mails={mailList} />, document.querySelector("#root"));
-
+  var classes = useStyles();
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: classes.root
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MakeTree__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    mails: mailList
+  }));
+}
 
 /* harmony default export */ __webpack_exports__["default"] = (Top);
 
