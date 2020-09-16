@@ -1,94 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Typography } from "@material-ui/core";
-import TreeView from "@material-ui/lab/TreeView";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import TreeItem from "@material-ui/lab/TreeItem";
-import SplitPane from "react-split-pane";
+import React, { useState, useEffect } from "react";
+import MakeTree from "./MakeTree";
 import gmailApi from "react-gmail";
-
-var count = 1;
-
-function Clicked() {
-    console.log("clicked" + count.toString());
-    //const sample = props.labe;
-    //console.log("clicked" + sample);
-    count++;
-}
-
-function DisplaySubject(props) {
-    const eachSub = props.sbj;
-
-    const result = (
-        //keyはSubject名にした
-        //<TreeItem nodeId={eachSub} label={eachSub} onLabelClick={<Clicked labe="A"/>} />
-        <TreeItem nodeId={eachSub} label={eachSub} onLabelClick={Clicked} />
-    );
-    return result;
-}
-
-function EachMail(props) {
-    const each = props.mail;
-    const eachSub = each.Subject.map((sub) => <DisplaySubject key={sub} sbj={sub} />);
-    const mailIndex = (
-        <TreeItem nodeId={each.from + "1"} label={each.from}>
-            <TreeItem nodeId="2" label={each.year}>
-                <TreeItem nodeId="3" label={each.month}>
-                    <TreeItem nodeId="4" label={each.day}>
-                        {eachSub}
-                    </TreeItem>
-                </TreeItem>
-            </TreeItem>
-        </TreeItem>
-    );
-
-    const result = (
-        //<SplitPane split="vertical" minSize={200} defaultSize={200} maxSize={400}>
-        <TreeView
-            //className={classes.root}
-            defaultCollapseIcon={<ExpandMoreIcon />}
-            defaultExpandIcon={<ChevronRightIcon />}
-        >
-            {mailIndex}
-        </TreeView>
-
-        /*<TreeView
-          //className={classes.root}
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpandIcon={<ChevronRightIcon />}
-        >
-          {mailIndex}
-        </TreeView>*/
-        //</SplitPane>
-    );
-
-    return result;
-}
-
-function MakeMailTree(props) {
-    const mailtp = props.mailtp;
-    const tp = mailtp.map((mail) => <EachMail key={mail} mail={mail} />);
-
-    const result = tp;
-    return result;
-}
-
-function MakeTree(props) {
-    const mails = props.mails;
-    //const mailItems = mails.map((mail) => <EachMail mail={mail} />);
-    const mailTrees = <MakeMailTree mailtp={mails} />;
-
-    //return <EachMail mail={props.mailList} />;
-    const layout = (
-        <SplitPane split="vertical" minSize={200} defaultSize={500} maxSize={1000} style={{ overflow: " visible" }}>
-            {mailTrees}
-            <Typography variant="h5" component="h3">
-                This is a sheet of paper.
-            </Typography>
-        </SplitPane>
-    );
-    return layout;
-}
 
 function Top() {
     const [isSignedIn, setIsSignedIn] = useState(false);
@@ -144,7 +56,7 @@ function Top() {
         });
 
         let organized_mails = [mails[0]];
-        mails.forEach((mail) => {
+        mails.slice(1).forEach((mail) => {
             const last_index = organized_mails.length - 1;
             if (mail.from === organized_mails[last_index].from) {
                 organized_mails[last_index].Subject.push(mail.Subject[0]);
