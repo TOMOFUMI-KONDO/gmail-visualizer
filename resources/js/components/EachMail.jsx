@@ -8,25 +8,36 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
     person: {
+        border: "1px solid black",
+        margin: "5px",
         padding: "5px",
         fontSize: "50px",
-        backgroundColor: "red",
+        //backgroundColor: "red",
     },
     year: {
+        borderLeft: "1px solid black",
+        borderTop: "1px solid black",
+        margin: "5px",
         padding: "5px",
         fontSize: "25px",
-        backgroundColor: "green",
+        //backgroundColor: "green",
     },
 
     month: {
+        borderLeft: "1px solid black",
+        borderTop: "1px solid black",
+        margin: "5px",
         padding: "5px",
         fontSize: "15px",
-        backgroundColor: "yellow",
+        //backgroundColor: "yellow",
     },
     day: {
+        borderLeft: "1px solid black",
+        borderTop: "1px solid black",
+        margin: "5px",
         padding: "5px",
         fontSize: "8px",
-        backgroundColor: "blue",
+        //backgroundColor: "blue",
     },
 });
 
