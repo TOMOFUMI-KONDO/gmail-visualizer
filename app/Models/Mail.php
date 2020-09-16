@@ -26,4 +26,13 @@ use Illuminate\Database\Eloquent\Model;
 class Mail extends Model
 {
     use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'emailId', 'title', 'body', 'from', 'to', 'date', 'day', 'month', 'year', 'dayoftheweek'
+    ];
 }
