@@ -86,6 +86,17 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./gmail.config.json":
+/*!***************************!*\
+  !*** ./gmail.config.json ***!
+  \***************************/
+/*! exports provided: clientId, apiKey, scope, discoveryDocs, default */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"clientId\":\"423210707146-0241ghoh3jao8v3t69ovp4c8dvnhgpmb.apps.googleusercontent.com\",\"apiKey\":\"AIzaSyDZ0OCR9BgwRo5ycq0HFMaMlZLSpngUeXU\",\"scope\":\"https://www.googleapis.com/auth/gmail.readonly\",\"discoveryDocs\":[\"https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest\"]}");
+
+/***/ }),
+
 /***/ "./node_modules/@babel/runtime/helpers/esm/arrayLikeToArray.js":
 /*!*********************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/esm/arrayLikeToArray.js ***!
@@ -572,6 +583,18 @@ function _interopRequireDefault(obj) {
 }
 
 module.exports = _interopRequireDefault;
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/regenerator/index.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! regenerator-runtime */ "./node_modules/regenerator-runtime/runtime.js");
+
 
 /***/ }),
 
@@ -77139,6 +77162,401 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./node_modules/react-gmail/index.js":
+/*!*******************************************!*\
+  !*** ./node_modules/react-gmail/index.js ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_gapi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lib/gapi */ "./node_modules/react-gmail/lib/gapi.js");
+/* harmony import */ var _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_lib_gapi__WEBPACK_IMPORTED_MODULE_0__);
+
+
+const config = __webpack_require__(/*! ../../gmail.config.json */ "./gmail.config.json");
+const metaHeaders = ["From", "Date", "Subject"];
+
+class GmailApi {
+  constructor() {
+    this.signIn = false;
+    this.listenCallback = null;
+    try {
+      this.initClient = this.initClient.bind(this);
+      this.handleError = this.handleError.bind(this);
+      this.getMessages = this.getMessages.bind(this);
+      this.updateSigninStatus = this.updateSigninStatus.bind(this);
+      this.normalizeData = this.normalizeData.bind(this);
+      this.listenSign = this.listenSign.bind(this);
+
+      _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.load("client:auth2", this.initClient);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  /**
+   * @param {string} userId
+   * @returns {Promise} Object: { emailAddress, messagesTotal, threadsTotal , historyId }
+   */
+  getProfile(userId = "me") {
+    if (this.signIn) {
+      return _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.client.gmail.users.getProfile({ userId });
+    } else {
+      return this.handleError();
+    }
+  }
+
+  /**
+   * @param {boolean} unread
+   * @param {integer} maxResults
+   * @param {string} userId
+   * @returns {Promise} Array: [ {id, threadId} ]
+   */
+  getMessageIds(unread = false, maxResults = 10, userId = "me") {
+    if (this.signIn) {
+      let q = "";
+      if (!!unread) {
+        q = "is:unread";
+      }
+      return _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.client.gmail.users.messages.list({ userId, maxResults, q });
+    } else {
+      return this.handleError();
+    }
+  }
+
+  /**
+   * Get messages by array of ids
+   * @param {[string] | string} id
+   * @param {string} userId
+   * @returns {Promise} [{id, labelId, snippet, internalDate, payload}] | {...}
+   */
+  getMessagesByIds(id, userId = "me") {
+    if (this.signIn) {
+      if (typeof id === "string") {
+        return _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.client.gmail.users.messages.get({ userId, id });
+      } else {
+        return Promise.all(id.map(id => _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.client.gmail.users.messages.get({ userId, id })));
+      }
+    } else {
+      return this.handleError();
+    }
+  }
+
+  /**
+   * @param {boolean} [unread=false]
+   * @param {number} [maxResults=10]
+   * @param {string} [userId="me"]
+   * @returns {Promise} [{id, labelIds, snippet, internalDate, payload}] | {...}
+   */
+  getMessages(unread = false, maxResults = 10, userId = "me") {
+    if (this.signIn) {
+      let q = "";
+      if (!!unread) {
+        q = "is:unread";
+      }
+
+      return new Promise((resolve, reject) => {
+        _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.client.gmail.users.messages
+          .list({ userId, maxResults, q })
+          .then(resIds => {
+            if (typeof ids === "string") {
+              resolve(_lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.client.gmail.users.messages.get({ userId, id: resIds.result.id }));
+            } else {
+              let resData = [];
+              if (resIds.result.hasOwnProperty("messages")) {
+                resData = Promise.all(
+                  resIds.result.messages.map(({ id }) => _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.client.gmail.users.messages.get({ userId, id }))
+                );
+              }
+              resolve(resData);
+            }
+          })
+          .catch(e => {
+            reject(e);
+          });
+      });
+    } else {
+      return this.handleError();
+    }
+  }
+
+  /**
+   * Get list of snippets from the last threads
+   * @param {boolean} [unread=false]
+   * @param {number} [maxResults=10]
+   * @param {string} [userId="me"]
+   * @returns {Promise} [{id, snippet, historyId}]
+   */
+  getThreadsList(unread = false, maxResults = 10, userId = "me") {
+    if (this.signIn) {
+      let q = "";
+      if (!!unread) {
+        q = "is:unread";
+      }
+      return _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.client.gmail.users.threads.list({ userId, maxResults, q });
+    } else {
+      return this.handleError();
+    }
+  }
+
+  /**
+   * @param {string | array} id
+   * @param {Promise} userId
+   */
+  getThreads(id, userId = "me") {
+    if (this.signIn) {
+      if (typeof id === "string") {
+        return _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.client.gmail.users.threads.get({ userId, id });
+      } else {
+        return Promise.all(id.map(id => _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.client.gmail.users.threads.get({ userId, id })));
+      }
+    } else {
+      return this.handleError();
+    }
+  }
+
+  /**
+   * Converting object to array of ids
+   * @param {object} data getMessageIds response
+   */
+  getArrayOfIds(data) {
+    if (data.hasOwnProperty("signIn")) return;
+    const {
+      result: { messages }
+    } = data;
+    let result = [];
+    messages.forEach(message => {
+      result.push(message.id);
+    });
+    return result;
+  }
+
+  /**
+   * Get headers for preview
+   * @param {object} data getMessageIds headers response
+   */
+  getMetaFromHeaders(data) {
+    if (data.hasOwnProperty("signIn")) return;
+    let result = {};
+    const { headers } = data.result.payload;
+    headers.forEach(header => {
+      if (metaHeaders.indexOf(header.name) > -1) {
+        result[header.name.toLowerCase()] = header.value;
+      }
+    });
+    return result;
+  }
+
+  /**
+   * Get body and decode
+   * @param {array | object} data getMessages response
+   * @returns {object} text, html
+   */
+  getBody(data) {
+    if (data.hasOwnProperty("signIn")) return;
+    const {
+      result: { payload }
+    } = data;
+    let result = {
+      text: "",
+      html: ""
+    };
+
+    if (payload.hasOwnProperty("parts")) {
+      payload.parts.forEach(part => {
+        if (part.mimeType === "text/plain") {
+          result.text = atob(part.body.data.replace(/-/g, "+").replace(/_/g, "/"));
+        }
+      });
+    } else {
+      if (!!payload.body.size) {
+        result.text = atob(payload.body.data.replace(/-/g, "+").replace(/_/g, "/"));
+      }
+    }
+    return result;
+  }
+
+  /**
+   *  Normalize data
+   * @param {array | object} data getMessages response
+   * @returns {array | object}
+   */
+  normalizeData(data) {
+    let result;
+
+    if (Array.isArray(data)) {
+      result = data.map(res => {
+        const { id, snippet } = res.result;
+        return {
+          ...this.getMetaFromHeaders(res),
+          id,
+          snippet,
+          body: this.getBody(res)
+        };
+      });
+    } else {
+      const { id, snippet } = data.result;
+      result = {
+        ...this.getMetaFromHeaders(data),
+        id,
+        snippet,
+        body: this.getBody(res)
+      };
+    }
+    return result;
+  }
+
+  // Update SignIn property
+  updateSigninStatus(isSignedIn) {
+    this.signIn = isSignedIn;
+  }
+
+  /**
+   * Sign in google account
+   * @returns {Promise}
+   */
+  handleSignIn() {
+    try {
+      return _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.auth2.getAuthInstance().signIn();
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  /**
+   * Sign out google account
+   * @returns {Promise}
+   */
+  handleSignOut() {
+    try {
+      return _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.auth2.getAuthInstance().signOut();
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  /**
+   * Error Handler
+   * @param {string} message
+   */
+  handleError(message = "You are not authorized or api not initialized!") {
+    return new Promise((_, reject) => {
+      reject({
+        message,
+        signIn: this.signIn
+      });
+      notification(message);
+    });
+  }
+
+  /**
+   * Method for update your sign if it was changed
+   * @param {*} callback function for updating sign status
+   */
+  listenSign(callback) {
+    if (_lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.auth2) {
+      _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.auth2.getAuthInstance().isSignedIn.listen(callback);
+    } else {
+      this.listenCallback = callback;
+    }
+  }
+
+  // Initialize the API client library
+  initClient() {
+    try {
+      _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.client.init(config).then(() => {
+        this.listenSign(this.updateSigninStatus);
+        this.updateSigninStatus(_lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.auth2.getAuthInstance().isSignedIn.get());
+        if (!!this.listenCallback) {
+          this.listenSign(this.listenCallback);
+          this.listenCallback(_lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.auth2.getAuthInstance().isSignedIn.get());
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+}
+
+// Notification for handleError
+const notification = message => {
+  const id = "gmail-api-notification-block";
+  const textBlockId = "gmail-api-notification-text-block";
+  const styles =
+    "position: absolute; top: 10px; right: 10px; box-shadow:5px 5px 20px -10px #cecece; z-index: 99999999; padding: 20px; color: #7d7d7d; border-radius: 100px; font-size: 14px; transition: 0.3s;text-align: center";
+  const notificationElement = document.getElementById(id);
+
+  if (!notificationElement) {
+    const notificationBlock = document.createElement("div");
+    notificationBlock.style.cssText = styles;
+    notificationBlock.id = id;
+
+    const notificationText = document.createElement("p");
+    notificationText.innerText = message;
+    notificationText.style.margin = "5px 0";
+    notificationText.id = textBlockId;
+
+    const signInButton = document.createElement("button");
+    signInButton.innerText = "Sign In";
+    signInButton.style.cssText =
+      "color: #7d7d7d; background: #fff; border:1px solid #7d7d7d; border-radius: 5px; cursor: pointer; padding: 3px 20px;";
+    signInButton.onclick = () => {
+      _lib_gapi__WEBPACK_IMPORTED_MODULE_0___default.a.auth2.getAuthInstance().signIn();
+    };
+
+    document.body.appendChild(notificationBlock);
+    notificationBlock.appendChild(notificationText);
+    notificationBlock.appendChild(signInButton);
+    setTimeout(() => {
+      notificationBlock.style.display = "none";
+    }, 5000);
+  } else {
+    document.getElementById(textBlockId).innerText = message;
+    notificationElement.style.display = "block";
+    setTimeout(() => {
+      notificationElement.style.display = "none";
+    }, 5000);
+  }
+};
+
+// Instance of GmailApi
+let gmailApi;
+try {
+  gmailApi = new GmailApi();
+} catch (e) {
+  console.log(e);
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (gmailApi);
+
+
+/***/ }),
+
+/***/ "./node_modules/react-gmail/lib/gapi.js":
+/*!**********************************************!*\
+  !*** ./node_modules/react-gmail/lib/gapi.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var gapi=window.gapi=window.gapi||{};gapi._bs=new Date().getTime();(function(){var g=function(){this.g=""};g.prototype.toString=function(){return"SafeScript{"+this.g+"}"};g.prototype.a=function(a){this.g=a};(new g).a("");var h=function(){this.j=""};h.prototype.toString=function(){return"SafeStyle{"+this.j+"}"};h.prototype.a=function(a){this.j=a};(new h).a("");var m=function(){this.i=""};m.prototype.toString=function(){return"SafeStyleSheet{"+this.i+"}"};m.prototype.a=function(a){this.i=a};(new m).a("");var n=function(){this.f=""};n.prototype.toString=function(){return"SafeHtml{"+this.f+"}"};n.prototype.a=function(a){this.f=a};(new n).a("<!DOCTYPE html>");(new n).a("");(new n).a("<br>");/*
+ gapi.loader.OBJECT_CREATE_TEST_OVERRIDE &&*/
+var q=window,v=document,aa=q.location,ba=function(){},ca=/\[native code\]/,x=function(a,b,c){return a[b]=a[b]||c},da=function(a){a=a.sort();for(var b=[],c=void 0,d=0;d<a.length;d++){var e=a[d];e!=c&&b.push(e);c=e}return b},y=function(){var a;if((a=Object.create)&&ca.test(a))a=a(null);else{a={};for(var b in a)a[b]=void 0}return a},D=x(q,"gapi",{});var E;E=x(q,"___jsl",y());x(E,"I",0);x(E,"hel",10);var F=function(){var a=aa.href;if(E.dpo)var b=E.h;else{b=E.h;var c=/([#].*&|[#])jsh=([^&#]*)/g,d=/([?#].*&|[?#])jsh=([^&#]*)/g;if(a=a&&(c.exec(a)||d.exec(a)))try{b=decodeURIComponent(a[2])}catch(e){}}return b},fa=function(a){var b=x(E,"PQ",[]);E.PQ=[];var c=b.length;if(0===c)a();else for(var d=0,e=function(){++d===c&&a()},f=0;f<c;f++)b[f](e)},G=function(a){return x(x(E,"H",y()),a,y())};var H=x(E,"perf",y()),K=x(H,"g",y()),ha=x(H,"i",y());x(H,"r",[]);y();y();var L=function(a,b,c){var d=H.r;"function"===typeof d?d(a,b,c):d.push([a,b,c])},N=function(a,b,c){b&&0<b.length&&(b=M(b),c&&0<c.length&&(b+="___"+M(c)),28<b.length&&(b=b.substr(0,28)+(b.length-28)),c=b,b=x(ha,"_p",y()),x(b,c,y())[a]=(new Date).getTime(),L(a,"_p",c))},M=function(a){return a.join("__").replace(/\./g,"_").replace(/\-/g,"_").replace(/,/g,"_")};var O=y(),R=[],S=function(a){throw Error("Bad hint"+(a?": "+a:""));};R.push(["jsl",function(a){for(var b in a)if(Object.prototype.hasOwnProperty.call(a,b)){var c=a[b];"object"==typeof c?E[b]=x(E,b,[]).concat(c):x(E,b,c)}if(b=a.u)a=x(E,"us",[]),a.push(b),(b=/^https:(.*)$/.exec(b))&&a.push("http:"+b[1])}]);var ia=/^(\/[a-zA-Z0-9_\-]+)+$/,T=[/\/amp\//,/\/amp$/,/^\/amp$/],ja=/^[a-zA-Z0-9\-_\.,!]+$/,ka=/^gapi\.loaded_[0-9]+$/,la=/^[a-zA-Z0-9,._-]+$/,pa=function(a,b,c,d){var e=a.split(";"),f=e.shift(),l=O[f],k=null;l?k=l(e,b,c,d):S("no hint processor for: "+f);k||S("failed to generate load url");b=k;c=b.match(ma);(d=b.match(na))&&1===d.length&&oa.test(b)&&c&&1===c.length||S("failed sanity: "+a);return k},ra=function(a,b,c,d){a=qa(a);ka.test(c)||S("invalid_callback");b=U(b);d=d&&d.length?U(d):null;var e=
+function(f){return encodeURIComponent(f).replace(/%2C/g,",")};return[encodeURIComponent(a.pathPrefix).replace(/%2C/g,",").replace(/%2F/g,"/"),"/k=",e(a.version),"/m=",e(b),d?"/exm="+e(d):"","/rt=j/sv=1/d=1/ed=1",a.b?"/am="+e(a.b):"",a.l?"/rs="+e(a.l):"",a.o?"/t="+e(a.o):"","/cb=",e(c)].join("")},qa=function(a){"/"!==a.charAt(0)&&S("relative path");for(var b=a.substring(1).split("/"),c=[];b.length;){a=b.shift();if(!a.length||0==a.indexOf("."))S("empty/relative directory");else if(0<a.indexOf("=")){b.unshift(a);
+break}c.push(a)}a={};for(var d=0,e=b.length;d<e;++d){var f=b[d].split("="),l=decodeURIComponent(f[0]),k=decodeURIComponent(f[1]);2==f.length&&l&&k&&(a[l]=a[l]||k)}b="/"+c.join("/");ia.test(b)||S("invalid_prefix");c=0;for(d=T.length;c<d;++c)T[c].test(b)&&S("invalid_prefix");c=V(a,"k",!0);d=V(a,"am");e=V(a,"rs");a=V(a,"t");return{pathPrefix:b,version:c,b:d,l:e,o:a}},U=function(a){for(var b=[],c=0,d=a.length;c<d;++c){var e=a[c].replace(/\./g,"_").replace(/-/g,"_");la.test(e)&&b.push(e)}return b.join(",")},
+V=function(a,b,c){a=a[b];!a&&c&&S("missing: "+b);if(a){if(ja.test(a))return a;S("invalid: "+b)}return null},oa=/^https?:\/\/[a-z0-9_.-]+\.google(rs)?\.com(:\d+)?\/[a-zA-Z0-9_.,!=\-\/]+$/,na=/\/cb=/g,ma=/\/\//g,sa=function(){var a=F();if(!a)throw Error("Bad hint");return a};O.m=function(a,b,c,d){(a=a[0])||S("missing_hint");return"https://apis.google.com"+ra(a,b,c,d)};var W=decodeURI("%73cript"),X=/^[-+_0-9\/A-Za-z]+={0,2}$/,Y=function(a,b){for(var c=[],d=0;d<a.length;++d){var e=a[d],f;if(f=e){a:{for(f=0;f<b.length;f++)if(b[f]===e)break a;f=-1}f=0>f}f&&c.push(e)}return c},Z=function(){var a=E.nonce;return void 0!==a?a&&a===String(a)&&a.match(X)?a:E.nonce=null:v.querySelector?(a=v.querySelector("script[nonce]"))?(a=a.nonce||a.getAttribute("nonce")||"",a&&a===String(a)&&a.match(X)?E.nonce=a:E.nonce=null):null:null},ua=function(a){if("loading"!=v.readyState)ta(a);
+else{var b=Z(),c="";null!==b&&(c=' nonce="'+b+'"');a="<"+W+' src="'+encodeURI(a)+'"'+c+"></"+W+">";v.write(a)}},ta=function(a){var b=v.createElement(W);b.setAttribute("src",a);a=Z();null!==a&&b.setAttribute("nonce",a);b.async="true";(a=v.getElementsByTagName(W)[0])?a.parentNode.insertBefore(b,a):(v.head||v.body||v.documentElement).appendChild(b)},va=function(a,b){var c=b&&b._c;if(c)for(var d=0;d<R.length;d++){var e=R[d][0],f=R[d][1];f&&Object.prototype.hasOwnProperty.call(c,e)&&f(c[e],a,b)}},xa=function(a,
+b,c){wa(function(){var d=b===F()?x(D,"_",y()):y();d=x(G(b),"_",d);a(d)},c)},za=function(a,b){var c=b||{};"function"==typeof b&&(c={},c.callback=b);va(a,c);b=a?a.split(":"):[];var d=c.h||sa(),e=x(E,"ah",y());if(e["::"]&&b.length){a=[];for(var f=null;f=b.shift();){var l=f.split(".");l=e[f]||e[l[1]&&"ns:"+l[0]||""]||d;var k=a.length&&a[a.length-1]||null,w=k;k&&k.hint==l||(w={hint:l,c:[]},a.push(w));w.c.push(f)}var z=a.length;if(1<z){var A=c.callback;A&&(c.callback=function(){0==--z&&A()})}for(;b=a.shift();)ya(b.c,
+c,b.hint)}else ya(b||[],c,d)},ya=function(a,b,c){a=da(a)||[];var d=b.callback,e=b.config,f=b.timeout,l=b.ontimeout,k=b.onerror,w=void 0;"function"==typeof k&&(w=k);var z=null,A=!1;if(f&&!l||!f&&l)throw"Timeout requires both the timeout parameter and ontimeout parameter to be set";k=x(G(c),"r",[]).sort();var P=x(G(c),"L",[]).sort(),I=[].concat(k),ea=function(u,B){if(A)return 0;q.clearTimeout(z);P.push.apply(P,p);var C=((D||{}).config||{}).update;C?C(e):e&&x(E,"cu",[]).push(e);if(B){N("me0",u,I);try{xa(B,
+c,w)}finally{N("me1",u,I)}}return 1};0<f&&(z=q.setTimeout(function(){A=!0;l()},f));var p=Y(a,P);if(p.length){p=Y(a,k);var r=x(E,"CP",[]),t=r.length;r[t]=function(u){if(!u)return 0;N("ml1",p,I);var B=function(J){r[t]=null;ea(p,u)&&fa(function(){d&&d();J()})},C=function(){var J=r[t+1];J&&J()};0<t&&r[t-1]?r[t]=function(){B(C)}:B(C)};if(p.length){var Q="loaded_"+E.I++;D[Q]=function(u){r[t](u);D[Q]=null};a=pa(c,p,"gapi."+Q,k);k.push.apply(k,p);N("ml0",p,I);b.sync||q.___gapisync?ua(a):ta(a)}else r[t](ba)}else ea(p)&&
+d&&d()};var wa=function(a,b){if(E.hee&&0<E.hel)try{return a()}catch(c){b&&b(c),E.hel--,za("debug_error",function(){try{window.___jsl.hefn(c)}catch(d){throw c;}})}else try{return a()}catch(c){throw b&&b(c),c;}};D.load=function(a,b){return wa(function(){return za(a,b)})};K.bs0=window.gapi._bs||(new Date).getTime();L("bs0");K.bs1=(new Date).getTime();L("bs1");delete window.gapi._bs;}).call(this);
+gapi.load("",{callback:window["gapi_onload"],_c:{"jsl":{"ci":{"deviceType":"desktop","oauth-flow":{"authUrl":"https://accounts.google.com/o/oauth2/auth","proxyUrl":"https://accounts.google.com/o/oauth2/postmessageRelay","disableOpt":true,"idpIframeUrl":"https://accounts.google.com/o/oauth2/iframe","usegapi":false},"debug":{"reportExceptionRate":0.05,"forceIm":false,"rethrowException":false,"host":"https://apis.google.com"},"enableMultilogin":true,"googleapis.config":{"auth":{"useFirstPartyAuthV2":true}},"isPlusUser":false,"inline":{"css":1},"disableRealtimeCallback":false,"drive_share":{"skipInitCommand":true},"csi":{"rate":0.01},"client":{"cors":false},"isLoggedIn":true,"signInDeprecation":{"rate":0.0},"include_granted_scopes":true,"llang":"en","iframes":{"youtube":{"params":{"location":["search","hash"]},"url":":socialhost:/:session_prefix:_/widget/render/youtube?usegapi\u003d1","methods":["scroll","openwindow"]},"ytsubscribe":{"url":"https://www.youtube.com/subscribe_embed?usegapi\u003d1"},"plus_circle":{"params":{"url":""},"url":":socialhost:/:session_prefix::se:_/widget/plus/circle?usegapi\u003d1"},"plus_share":{"params":{"url":""},"url":":socialhost:/:session_prefix::se:_/+1/sharebutton?plusShare\u003dtrue\u0026usegapi\u003d1"},"rbr_s":{"params":{"url":""},"url":":socialhost:/:session_prefix::se:_/widget/render/recobarsimplescroller"},":source:":"3p","playemm":{"url":"https://play.google.com/work/embedded/search?usegapi\u003d1\u0026usegapi\u003d1"},"savetoandroidpay":{"url":"https://pay.google.com/gp/v/widget/save"},"blogger":{"params":{"location":["search","hash"]},"url":":socialhost:/:session_prefix:_/widget/render/blogger?usegapi\u003d1","methods":["scroll","openwindow"]},"evwidget":{"params":{"url":""},"url":":socialhost:/:session_prefix:_/events/widget?usegapi\u003d1"},"partnersbadge":{"url":"https://www.gstatic.com/partners/badge/templates/badge.html?usegapi\u003d1"},"dataconnector":{"url":"https://dataconnector.corp.google.com/:session_prefix:ui/widgetview?usegapi\u003d1"},"surveyoptin":{"url":"https://www.google.com/shopping/customerreviews/optin?usegapi\u003d1"},":socialhost:":"https://apis.google.com","shortlists":{"url":""},"hangout":{"url":"https://talkgadget.google.com/:session_prefix:talkgadget/_/widget"},"plus_followers":{"params":{"url":""},"url":":socialhost:/_/im/_/widget/render/plus/followers?usegapi\u003d1"},"post":{"params":{"url":""},"url":":socialhost:/:session_prefix::im_prefix:_/widget/render/post?usegapi\u003d1"},":gplus_url:":"https://plus.google.com","signin":{"params":{"url":""},"url":":socialhost:/:session_prefix:_/widget/render/signin?usegapi\u003d1","methods":["onauth"]},"rbr_i":{"params":{"url":""},"url":":socialhost:/:session_prefix::se:_/widget/render/recobarinvitation"},"donation":{"url":"https://onetoday.google.com/home/donationWidget?usegapi\u003d1"},"share":{"url":":socialhost:/:session_prefix::im_prefix:_/widget/render/share?usegapi\u003d1"},"plusone":{"params":{"count":"","size":"","url":""},"url":":socialhost:/:session_prefix::se:_/+1/fastbutton?usegapi\u003d1"},"comments":{"params":{"location":["search","hash"]},"url":":socialhost:/:session_prefix:_/widget/render/comments?usegapi\u003d1","methods":["scroll","openwindow"]},":im_socialhost:":"https://plus.googleapis.com","backdrop":{"url":"https://clients3.google.com/cast/chromecast/home/widget/backdrop?usegapi\u003d1"},"visibility":{"params":{"url":""},"url":":socialhost:/:session_prefix:_/widget/render/visibility?usegapi\u003d1"},"autocomplete":{"params":{"url":""},"url":":socialhost:/:session_prefix:_/widget/render/autocomplete"},"additnow":{"url":"https://apis.google.com/marketplace/button?usegapi\u003d1","methods":["launchurl"]},":signuphost:":"https://plus.google.com","ratingbadge":{"url":"https://www.google.com/shopping/customerreviews/badge?usegapi\u003d1"},"appcirclepicker":{"url":":socialhost:/:session_prefix:_/widget/render/appcirclepicker"},"follow":{"url":":socialhost:/:session_prefix:_/widget/render/follow?usegapi\u003d1"},"community":{"url":":ctx_socialhost:/:session_prefix::im_prefix:_/widget/render/community?usegapi\u003d1"},"sharetoclassroom":{"url":"https://www.gstatic.com/classroom/sharewidget/widget_stable.html?usegapi\u003d1"},"ytshare":{"params":{"url":""},"url":":socialhost:/:session_prefix:_/widget/render/ytshare?usegapi\u003d1"},"plus":{"url":":socialhost:/:session_prefix:_/widget/render/badge?usegapi\u003d1"},"family_creation":{"params":{"url":""},"url":"https://families.google.com/webcreation?usegapi\u003d1\u0026usegapi\u003d1"},"commentcount":{"url":":socialhost:/:session_prefix:_/widget/render/commentcount?usegapi\u003d1"},"configurator":{"url":":socialhost:/:session_prefix:_/plusbuttonconfigurator?usegapi\u003d1"},"zoomableimage":{"url":"https://ssl.gstatic.com/microscope/embed/"},"appfinder":{"url":"https://gsuite.google.com/:session_prefix:marketplace/appfinder?usegapi\u003d1"},"savetowallet":{"url":"https://pay.google.com/gp/v/widget/save"},"person":{"url":":socialhost:/:session_prefix:_/widget/render/person?usegapi\u003d1"},"savetodrive":{"url":"https://drive.google.com/savetodrivebutton?usegapi\u003d1","methods":["save"]},"page":{"url":":socialhost:/:session_prefix:_/widget/render/page?usegapi\u003d1"},"card":{"url":":socialhost:/:session_prefix:_/hovercard/card"}}},"h":"m;/_/scs/apps-static/_/js/k\u003doz.gapi.en.7kWSr24wXFc.O/am\u003dwQE/d\u003d1/ct\u003dzgms/rs\u003dAGLTcCN-4ZptW5UzimRFZRBm6izu5h2ZaQ/m\u003d__features__","u":"https://apis.google.com/js/api.js","hee":true,"fp":"099e179eeab1be8c339ac2c410efb4ef6f9b33b7","dpo":false},"fp":"099e179eeab1be8c339ac2c410efb4ef6f9b33b7","annotation":["interactivepost","recobar","signin2","autocomplete","profile"],"bimodal":["signin","share"]}});
+module.exports = gapi
+
+/***/ }),
+
 /***/ "./node_modules/react-is/cjs/react-is.development.js":
 /*!***********************************************************!*\
   !*** ./node_modules/react-is/cjs/react-is.development.js ***!
@@ -85445,6 +85863,765 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./node_modules/regenerator-runtime/runtime.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var runtime = (function (exports) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  function define(obj, key, value) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+    return obj[key];
+  }
+  try {
+    // IE 8 has a broken Object.defineProperty that only works on DOM objects.
+    define({}, "");
+  } catch (err) {
+    define = function(obj, key, value) {
+      return obj[key] = value;
+    };
+  }
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  exports.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  IteratorPrototype[iteratorSymbol] = function () {
+    return this;
+  };
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunction.displayName = define(
+    GeneratorFunctionPrototype,
+    toStringTagSymbol,
+    "GeneratorFunction"
+  );
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      define(prototype, method, function(arg) {
+        return this._invoke(method, arg);
+      });
+    });
+  }
+
+  exports.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  exports.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      define(genFun, toStringTagSymbol, "GeneratorFunction");
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  exports.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator, PromiseImpl) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return PromiseImpl.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return PromiseImpl.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration.
+          result.value = unwrapped;
+          resolve(result);
+        }, function(error) {
+          // If a rejected Promise was yielded, throw the rejection back
+          // into the async generator function so it can be handled there.
+          return invoke("throw", error, resolve, reject);
+        });
+      }
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new PromiseImpl(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
+  exports.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  exports.async = function(innerFn, outerFn, self, tryLocsList, PromiseImpl) {
+    if (PromiseImpl === void 0) PromiseImpl = Promise;
+
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList),
+      PromiseImpl
+    );
+
+    return exports.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var method = delegate.iterator[context.method];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method always terminates the yield* loop.
+      context.delegate = null;
+
+      if (context.method === "throw") {
+        // Note: ["return"] must be used for ES3 parsing compatibility.
+        if (delegate.iterator["return"]) {
+          // If the delegate iterator has a return method, give it a
+          // chance to clean up.
+          context.method = "return";
+          context.arg = undefined;
+          maybeInvokeDelegate(delegate, context);
+
+          if (context.method === "throw") {
+            // If maybeInvokeDelegate(context) changed context.method from
+            // "return" to "throw", let that override the TypeError below.
+            return ContinueSentinel;
+          }
+        }
+
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a 'throw' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  define(Gp, toStringTagSymbol, "Generator");
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  exports.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  exports.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+
+  // Regardless of whether this script is executing as a CommonJS module
+  // or not, return the runtime object so that we can declare the variable
+  // regeneratorRuntime in the outer scope, which allows this module to be
+  // injected easily by `bin/regenerator --include-runtime script.js`.
+  return exports;
+
+}(
+  // If this script is executing as a CommonJS module, use module.exports
+  // as the regeneratorRuntime namespace. Otherwise create a new empty
+  // object. Either way, the resulting object will be used to initialize
+  // the regeneratorRuntime variable at the top of this file.
+   true ? module.exports : undefined
+));
+
+try {
+  regeneratorRuntime = runtime;
+} catch (accidentalStrictMode) {
+  // This module should not be running in strict mode, so the above
+  // assignment should always work unless something is misconfigured. Just
+  // in case runtime.js accidentally runs in strict mode, we can escape
+  // strict mode using a global Function call. This could conceivably fail
+  // if a Content Security Policy forbids using Function, but in that case
+  // the proper solution is to fix the accidental strict mode problem. If
+  // you've misconfigured your bundler to force strict mode and applied a
+  // CSP to forbid Function, and you're not willing to fix either of those
+  // problems, please detail your unique predicament in a GitHub issue.
+  Function("r", "regeneratorRuntime = r")(runtime);
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/resolve-pathname/esm/resolve-pathname.js":
 /*!***************************************************************!*\
   !*** ./node_modules/resolve-pathname/esm/resolve-pathname.js ***!
@@ -87222,6 +88399,9 @@ __webpack_require__.r(__webpack_exports__);
 
 function MakeMailTree(props) {
   var mailtp = props.mailtp;
+  mailtp.map(function (mail) {
+    return console.log(mail);
+  });
   var tp = mailtp.map(function (mail) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_EachMail__WEBPACK_IMPORTED_MODULE_1__["default"], {
       key: mail,
@@ -87297,38 +88477,133 @@ function MakeTree(props) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _MakeTree__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MakeTree */ "./resources/js/components/MakeTree.jsx");
-/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _MakeTree__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MakeTree */ "./resources/js/components/MakeTree.jsx");
+/* harmony import */ var react_gmail__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-gmail */ "./node_modules/react-gmail/index.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-var mail = {
-  from: "A",
-  To: "C",
-  date: "Thu, 25 Dec 2014",
-  year: "2014",
-  month: "Dec",
-  day: "25",
-  dayoftheweek: "Thu",
-  cc: "B",
-  Subject: ["Test1", "Test2", "Test3", "Test4"],
-  Body: ["Hello1", "Hello2", "Hello3", "Hello4"]
-};
-var mailList = [mail, mail, mail, mail];
-var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__["makeStyles"])({
-  root: {
-    backgroundColor: "red"
-  }
-});
+
 
 function Top() {
-  var classes = useStyles();
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: classes.root
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MakeTree__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    mails: mailList
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      isSignedIn = _useState2[0],
+      setIsSignedIn = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
+      _useState4 = _slicedToArray(_useState3, 2),
+      mails = _useState4[0],
+      setMails = _useState4[1];
+
+  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+    window.gapi.load("client:auth2", function () {
+      window.gapi.client.init({
+        clientId: "423210707146-0241ghoh3jao8v3t69ovp4c8dvnhgpmb.apps.googleusercontent.com",
+        scope: "https://www.googleapis.com/auth/gmail.readonly"
+      }).then(function () {
+        var auth = window.gapi.auth2.getAuthInstance();
+        setIsSignedIn(auth.isSignedIn.get());
+      });
+    });
+  }, []);
+
+  var renderAuth = function renderAuth() {
+    if (isSignedIn) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, "login with google!!");
+    } else {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, "I can not see your google account!!");
+    }
+  };
+
+  var loginWithGoogle = function loginWithGoogle() {
+    window.gapi.auth2.getAuthInstance().signIn();
+  };
+
+  var logoutFromGoogle = function logoutFromGoogle() {
+    window.gapi.auth2.getAuthInstance().signOut();
+  };
+
+  var getMails = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      var response, mails, organized_mails;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return react_gmail__WEBPACK_IMPORTED_MODULE_3__["default"].getMessages(false, 30, "me");
+
+            case 2:
+              response = _context.sent;
+              mails = react_gmail__WEBPACK_IMPORTED_MODULE_3__["default"].normalizeData(response).map(function (mail) {
+                var date = new Date(mail.date);
+                return {
+                  from: mail.from,
+                  year: date.getFullYear(),
+                  month: date.getMonth(),
+                  day: date.getDate(),
+                  Subject: [mail.subject],
+                  Body: [mail.body.text]
+                };
+              });
+              mails.sort(function (a, b) {
+                return a.from > b.from ? 1 : -1;
+              });
+              organized_mails = [mails[0]];
+              mails.slice(1).forEach(function (mail) {
+                var last_index = organized_mails.length - 1;
+
+                if (mail.from === organized_mails[last_index].from) {
+                  organized_mails[last_index].Subject.push(mail.Subject[0]);
+                  organized_mails[last_index].Body.push(mail.Body[0]);
+                } else {
+                  organized_mails.push(mail);
+                }
+              });
+              setMails(organized_mails);
+
+            case 8:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function getMails() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+    onClick: getMails
+  }, "get mails"), renderAuth(), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+    onClick: loginWithGoogle
+  }, "login with google"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+    onClick: logoutFromGoogle
+  }, "logout from google"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_MakeTree__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    mails: mails
   }));
 }
 
@@ -87354,8 +88629,8 @@ function Top() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/shimalab/watanabe/ハッカソン2/gmail-visualizer/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/shimalab/watanabe/ハッカソン2/gmail-visualizer/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /mnt/c/dev/gmail-visualizer/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /mnt/c/dev/gmail-visualizer/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
