@@ -17,15 +17,15 @@ class CreateMailsTable extends Migration
         Schema::create('mails', function (Blueprint $table) {
             $table->id();
             $table->string('emailId');
-            $table->string('title');
-            $table->string('body', 12000);
+            $table->string('subject');
+            $table->string('body', 12000)->nullable();
             $table->string('from');
             $table->string('to');
             $table->string('date');
-            $table->integer('day');
-            $table->string('month');
-            $table->integer('year');
-            $table->string('dayoftheweek');
+            $table->string('day')->nullable();
+            $table->string('month')->nullable();
+            $table->string('year')->nullable();
+            $table->string('dayoftheweek')->nullable();
             $table->timestamps();
         });
     }

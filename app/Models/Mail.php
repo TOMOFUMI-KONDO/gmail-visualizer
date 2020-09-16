@@ -33,6 +33,6 @@ class Mail extends Model
      * @var array
      */
     protected $fillable = [
-        'emailId', 'title', 'body', 'from', 'to', 'date', 'day', 'month', 'year', 'dayoftheweek'
+        'emailId', 'subject', 'body', 'from', 'to', 'date', 'day', 'month', 'year', 'dayoftheweek'
     ];
 }

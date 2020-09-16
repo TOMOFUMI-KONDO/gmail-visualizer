@@ -30,7 +30,7 @@ function DisplaySubject(props) {
 
 function EachMail(props) {
     const each = props.mail;
-    const eachSub = each.Subject.map((sub) => <DisplaySubject key={sub} sbj={sub} />);
+    const eachSub = each.Subject.map((sub, index) => <DisplaySubject key={index} sbj={sub} />);
     const mailIndex = (
         <TreeItem nodeId={each.from + "1"} label={each.from}>
             <TreeItem nodeId="2" label={each.year}>
@@ -68,7 +68,7 @@ function EachMail(props) {
 
 function MakeMailTree(props) {
     const mailtp = props.mailtp;
-    const tp = mailtp.map((mail) => <EachMail key={mail} mail={mail} />);
+    const tp = mailtp.map((mail, index) => <EachMail key={index} mail={mail} />);
 
     const result = tp;
     return result;
@@ -126,14 +126,14 @@ function Top() {
     };
 
     const getMails = () => {
-        gmailApi.getMessages(false, 10, "me").then((response) => {
+        gmailApi.getMessages(false, 1, "me").then((response) => {
             const mails = gmailApi.normalizeData(response).map((mail) => {
                 const date = new Date(mail.date);
 
                 const mailObject = {
                     emailId: mail.id,
                     from: mail.from,
-                    to: "",
+                    to: window.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getEmail(),
                     date: mail.date,
                     year: date.getFullYear(),
                     month: date.getMonth(),
@@ -153,17 +153,20 @@ function Top() {
     };
 
     const saveMails = (payload) => {
+        // const params = new URLSearchParams();
+        // params.append("emailId", payload.emailId);
+        // params.append("subject", payload.Subject[0]);
+        // // params.append("body", payload.Body[0]);
+        // params.append("from", payload.from);
+        // params.append("to", payload.to);
+        // params.append("date", payload.date);
         axios
             .post("/api/add", {
                 emailId: payload.emailId,
+                subject: payload.Subject[0],
                 from: payload.from,
                 to: payload.to,
                 date: payload.date,
-                year: payload.year,
-                month: payload.month,
-                day: payload.day,
-                dayoftheweek: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][payload.dayoftheweek],
-                body: payload.Body,
             })
             .then(() => {
                 console.log("success!");
@@ -171,6 +174,14 @@ function Top() {
             .catch((error) => {
                 console.log(error.message);
             });
+        console.log(payload.emailId);
+        console.log(payload.Subject[0]);
+        console.log(payload.from);
+        console.log(payload.to);
+        console.log(payload.date);
+        // axios.get("/api/get").then((response) => {
+        //     console.log(response);
+        // });
     };
 
     return (
