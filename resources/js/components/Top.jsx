@@ -7,6 +7,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
 import Typography from "@material-ui/core/Typography";
 import SplitPane from "react-split-pane";
+//import { Divider } from "@material-ui/core";
 
 const mail = {
     from: "A",
@@ -107,7 +108,11 @@ function MakeTree(props) {
 }
 
 function Top() {
-    return <MakeTree mails={mailList} />;
+    return (
+        <div className="mailTree">
+            <MakeTree mails={mailList} />
+        </div>
+    );
 }
 
 //const mailList = [mail, mail, mail, mail];
