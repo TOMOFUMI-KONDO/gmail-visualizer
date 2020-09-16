@@ -6,6 +6,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
 import SplitPane from "react-split-pane";
 import gmailApi from "react-gmail";
+import axios from "axios";
 
 var count = 1;
 
@@ -161,13 +162,13 @@ function Top() {
             dayoftheweek: payload.dayoftheweek,
             body: payload.Body,
         })
-        .then(() => {
-            console.log("success!")
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    }
+            .then(() => {
+                console.log("success!");
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
 
     return (
         <div>
