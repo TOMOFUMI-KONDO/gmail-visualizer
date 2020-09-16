@@ -28,7 +28,7 @@ class OAuthController extends Controller
     public function handleProviderCallback($provider)
     {
         // socialUserにGoogleから渡されたユーザー情報が入っている
-        $socialUser = Socialite::driver($provider)->user();
+        $socialUser = Socialite::driver($provider)->stateless()->user();
         // 実行時に、指定したパラメータを持ったレコードが無ければ、新しくインスタンスを作成します。
         $user = User::firstOrNew(['email' => $socialUser->getEmail()]);
 
