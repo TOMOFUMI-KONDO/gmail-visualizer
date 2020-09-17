@@ -2,19 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Typography } from "@material-ui/core";
 import { decode } from "js-base64";
 import MakeTree from "./MakeTree";
-//import base64url from "base64url";
 // import axios from "axios";
 
 function Top() {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [mails, setMails] = useState([]);
+
     const [progress, setPrgoress] = useState(0);
     const API_KEY = "AIzaSyDZ0OCR9BgwRo5ycq0HFMaMlZLSpngUeXU";
     const CLIENT_ID = "423210707146-0241ghoh3jao8v3t69ovp4c8dvnhgpmb.apps.googleusercontent.com";
     const SCOPE = "https://www.googleapis.com/auth/gmail.readonly";
     const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
 
-    const max_result = 30;
+    const max_result = 100;
     useEffect(() => {
         window.gapi.load("client:auth2", () => {
             window.gapi.client
@@ -30,6 +30,14 @@ function Top() {
                 });
         });
     }, [isSignedIn]);
+
+    const renderAuth = () => {
+        if (isSignedIn) {
+            return <div>ログイン中です！</div>;
+        } else {
+            return <div>ログインされていません</div>;
+        }
+    };
 
     const loginWithGoogle = () => {
         window.gapi.auth2.getAuthInstance().signIn();
@@ -116,24 +124,14 @@ function Top() {
 
     return (
         <div>
-            <button onClick={getMails}>get mails</button>
-            <button onClick={loginWithGoogle}>login with google</button>
-            <button onClick={logoutFromGoogle}>logout from google</button>
+            <button onClick={getMails}>メールを取得する</button>
+            {renderAuth()}
+            <button onClick={loginWithGoogle}>Googleアカウントでログイン</button>
+            <button onClick={logoutFromGoogle}>ログアウトする</button>
             <Typography>{progress}%完了</Typography>
             <MakeTree mails={mails} />
         </div>
     );
-
-    //     return (
-    //         <div>
-    //             <button onClick={mailIds}>get mails</button>
-    //             <button onClick={showEmailInfo}>Show email info List</button>
-    //             {renderAuth()}
-    //             <button onClick={loginWithGoogle}>login with google</button>
-    //             <button onClick={logoutFromGoogle}>logout from google</button>
-    //             <MakeTree mails={mails} />
-    //         </div>
-    //     );
 }
 
 export default Top;
