@@ -10,7 +10,7 @@ function Top() {
 
     const [progress, setPrgoress] = useState(0);
     const API_KEY = "AIzaSyDZ0OCR9BgwRo5ycq0HFMaMlZLSpngUeXU";
-    const CLIENT_ID = "423210707146-0241ghoh3jao8v3t69ovp4c8dvnhgpmb.apps.googleusercontent.com";
+    const CLIENT_ID = "423210707146-l8dqh6dopehk0kdecqmlqpfh11t8lo4n.apps.googleusercontent.com";
     const SCOPE = "https://www.googleapis.com/auth/gmail.readonly";
     const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
 
