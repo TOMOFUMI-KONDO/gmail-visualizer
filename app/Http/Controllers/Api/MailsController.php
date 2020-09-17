@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Mail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class MailsController extends Controller
 {
@@ -13,7 +14,7 @@ class MailsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function getMails()
     {
         return Mail::all();
     }
@@ -24,9 +25,21 @@ class MailsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function addMails(Request $request)
     {
-        //
+        $mails = Mail::firstOrNew(['emailId' => $request->emailId]);
+        $mails->subject = $request->subject;
+        $mails->body = $request->body;
+        $mails->from = $request->from;
+        $mails->to = $request->to;
+        $mails->date = $request->date;
+        $mails->day = $request->day;
+        $mails->month = $request->month;
+        $mails->year = $request->year;
+        $mails->dayoftheweek = $request->dayoftheweek;
+        $mails->updated_at = Carbon::now();
+        $mails->created_at = Carbon::now();
+        $mails->save();
     }
 
     /**
