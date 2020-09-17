@@ -19,14 +19,7 @@ function MakeTree(props) {
     const mailTrees = <MakeMailTree mailtp={mails} setNowBody={setNowBody} />;
 
     const layout = (
-        <SplitPane
-            style={{ overflow: "visible" }}
-            className="split"
-            split="vertical"
-            minSize={200}
-            defaultSize={500}
-            maxSize={1000}
-        >
+        <SplitPane className="split" split="vertical" minSize={200} defaultSize={500} maxSize={1000}>
             {mailTrees}
             <Typography className={classes.content} variant="h5" component="h3">
                 {nowBody}
