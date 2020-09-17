@@ -5,8 +5,9 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
 import SplitPane from "react-split-pane";
-import gmailApi from "react-gmail";
-import axios from "axios";
+import base64url from "base64url";
+// import gmailApi from "react-gmail";
+// import axios from "axios";
 
 var count = 1;
 
@@ -94,13 +95,28 @@ function MakeTree(props) {
 function Top() {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [mails, setMails] = useState([]);
+    const API_KEY = "AIzaSyDZ0OCR9BgwRo5ycq0HFMaMlZLSpngUeXU";
+    const CLIENT_ID = "423210707146-0241ghoh3jao8v3t69ovp4c8dvnhgpmb.apps.googleusercontent.com";
+    const SCOPE = "https://www.googleapis.com/auth/gmail.readonly";
+    const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
+    let mailBody;
+    let mayBeHtml;
+    let emailId;
+    let emailInfo;
+    const numberOfEmail = 5;
+    let snippet = "";
+    let emailFrom = "";
+    let emailTo = "";
+    let fullDate = "";
 
     useEffect(() => {
         window.gapi.load("client:auth2", () => {
             window.gapi.client
                 .init({
-                    clientId: "423210707146-0241ghoh3jao8v3t69ovp4c8dvnhgpmb.apps.googleusercontent.com",
-                    scope: "https://www.googleapis.com/auth/gmail.readonly",
+                    apiKey: API_KEY,
+                    clientId: CLIENT_ID,
+                    scope: SCOPE,
+                    discoveryDocs: DISCOVERY_DOCS,
                 })
                 .then(() => {
                     const auth = window.gapi.auth2.getAuthInstance();
@@ -125,68 +141,121 @@ function Top() {
         window.gapi.auth2.getAuthInstance().signOut();
     };
 
-    const getMails = () => {
-        gmailApi.getMessages(false, 1, "me").then((response) => {
-            const mails = gmailApi.normalizeData(response).map((mail) => {
-                const date = new Date(mail.date);
+    // const getMails = () => {
+    //     gmailApi.getMessages(false, 10, "me").then((response) => {
+    //         const mails = gmailApi.normalizeData(response).map((mail) => {
+    //             const date = new Date(mail.date);
 
-                const mailObject = {
-                    emailId: mail.id,
-                    from: mail.from,
-                    to: window.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getEmail(),
-                    date: mail.date,
-                    year: date.getFullYear(),
-                    month: date.getMonth(),
-                    day: date.getDate(),
-                    dayoftheweek: date.getDay(),
-                    cc: "",
-                    Subject: [mail.subject],
-                    Body: [mail.body.text],
-                };
+    //             const mailObject = {
+    //                 emailId: mail.id,
+    //                 from: mail.from,
+    //                 to: window.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getEmail(),
+    //                 date: mail.date,
+    //                 year: date.getFullYear(),
+    //                 month: date.getMonth(),
+    //                 day: date.getDate(),
+    //                 dayoftheweek: date.getDay(),
+    //                 cc: "",
+    //                 Subject: [mail.subject],
+    //                 Body: [mail.body.text],
+    //             };
 
-                saveMails(mailObject);
+    //             // saveMails(mailObject);
 
-                return mailObject;
+    //             return mailObject;
+    //         });
+    //         setMails(mails);
+    //     });
+    // };
+
+    const mailIds = () => {
+        let count = 0;
+        emailInfo = [];
+        window.gapi.client.gmail.users.messages
+            .list({
+                userId: "me",
+                maxResults: numberOfEmail,
+            })
+            .then(function (response) {
+                const mailIdsArray = JSON.parse(response.body).messages.map((message) => message.id);
+                console.log(mailIdsArray); // idのみの配列
+                mailIdsArray.forEach((id) => {
+                    emailId = id;
+                    window.gapi.client.gmail.users.messages
+                        .get({
+                            userId: "me",
+                            id: id,
+                        })
+                        .then((response) => {
+                            mailBody = "";
+                            mayBeHtml = "";
+                            snippet = "";
+                            emailFrom = "";
+                            emailTo = "";
+                            fullDate = "";
+                            if (response.result.payload.parts) {
+                                mailBody = base64url.decode(response.result.payload.parts[0].body.data);
+                            } else {
+                                mayBeHtml = base64url.decode(response.result.payload.body.data);
+                            }
+                            snippet = response.result.snippet;
+                            emailFrom = response.result.payload.headers.find((header) => header.name === "From").value;
+                            emailTo = response.result.payload.headers.find((header) => header.name === "To").value;
+                            fullDate = response.result.payload.headers.find((header) => header.name === "Date").value;
+                            emailInfo.push({
+                                emailId,
+                                body: mailBody,
+                                subBody: mayBeHtml,
+                                subject: snippet,
+                                from: emailFrom,
+                                to: emailTo,
+                                date: fullDate,
+                            });
+                            count++;
+                            if (count === numberOfEmail) {
+                                window.alert("Done!");
+                            }
+                        });
+                });
             });
-            setMails(mails);
+    };
+
+    const showEmailInfo = () => {
+        emailInfo.forEach((emailObject) => {
+            console.log(emailObject);
         });
     };
 
-    const saveMails = (payload) => {
-        // const params = new URLSearchParams();
-        // params.append("emailId", payload.emailId);
-        // params.append("subject", payload.Subject[0]);
-        // // params.append("body", payload.Body[0]);
-        // params.append("from", payload.from);
-        // params.append("to", payload.to);
-        // params.append("date", payload.date);
-        axios
-            .post("/api/add", {
-                emailId: payload.emailId,
-                subject: payload.Subject[0],
-                from: payload.from,
-                to: payload.to,
-                date: payload.date,
-            })
-            .then(() => {
-                console.log("success!");
-            })
-            .catch((error) => {
-                console.log(error.message);
-            });
-        console.log(payload.emailId);
-        console.log(payload.Subject[0]);
-        console.log(payload.from);
-        console.log(payload.to);
-        console.log(payload.date);
-        // axios.get("/api/get").then((response) => {
-        //     console.log(response);
-        // });
-    };
+    // 特定のメール一つを取得する時に使う
+    // const getSpecific = () => {
+    //     const testId = "17495f77bd6855fd";
+    //     window.gapi.client.gmail.users.messages.get({ userId: "me", id: testId }).then((response) => {
+    //         console.log(base64url.decode(response.result.payload.parts[0].body.data));
+    //     });
+    // };
+
+    // データーベースに保存する
+    // const saveMails = (payload) => {
+    //     axios
+    //         .post("/api/add", {
+    //             emailId: payload.emailId,
+    //             subject: payload.Subject[0],
+    //             from: payload.from,
+    //             to: payload.to,
+    //             date: payload.date,
+    //         })
+    //         .then(() => {
+    //             console.log("success!");
+    //         })
+    //         .catch((error) => {
+    //             console.log(error.message);
+    //         });
+    // };
 
     return (
         <div>
-            <button onClick={getMails}>get mails</button>
+            <button onClick={mailIds}>get mails</button>
+            <button onClick={showEmailInfo}>Show email info List</button>
             {renderAuth()}
             <button onClick={loginWithGoogle}>login with google</button>
             <button onClick={logoutFromGoogle}>logout from google</button>
