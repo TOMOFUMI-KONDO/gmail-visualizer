@@ -7,6 +7,7 @@ const useStyles = makeStyles({
         fontSize: "10px",
         backgroundColor: "white",
         color: "black",
+        borderBottom: "1px solid black",
     },
 });
 

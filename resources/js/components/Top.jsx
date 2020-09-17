@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import gmailApi from "react-gmail";
+import React, { useState, useEffect } from "react";
 import MakeTree from "./MakeTree";
+import gmailApi from "react-gmail";
 
 function Top() {
     const [isSignedIn, setIsSignedIn] = useState(false);

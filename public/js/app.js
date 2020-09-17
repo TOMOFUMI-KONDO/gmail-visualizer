@@ -88266,7 +88266,8 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__["ma
   content: {
     fontSize: "10px",
     backgroundColor: "white",
-    color: "black"
+    color: "black",
+    borderBottom: "1px solid black"
   }
 });
 
@@ -88329,24 +88330,35 @@ __webpack_require__.r(__webpack_exports__);
 
 var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_6__["makeStyles"])({
   person: {
+    border: "1px solid black",
+    margin: "5px",
     padding: "5px",
-    fontSize: "50px",
-    backgroundColor: "red"
+    fontSize: "50px" //backgroundColor: "red",
+
   },
   year: {
+    borderLeft: "1px solid black",
+    borderTop: "1px solid black",
+    margin: "5px",
     padding: "5px",
-    fontSize: "25px",
-    backgroundColor: "green"
+    fontSize: "25px" //backgroundColor: "green",
+
   },
   month: {
+    borderLeft: "1px solid black",
+    borderTop: "1px solid black",
+    margin: "5px",
     padding: "5px",
-    fontSize: "15px",
-    backgroundColor: "yellow"
+    fontSize: "15px" //backgroundColor: "yellow",
+
   },
   day: {
+    borderLeft: "1px solid black",
+    borderTop: "1px solid black",
+    margin: "5px",
     padding: "5px",
-    fontSize: "8px",
-    backgroundColor: "blue"
+    fontSize: "8px" //backgroundColor: "blue",
+
   }
 });
 
@@ -88480,6 +88492,9 @@ function MakeTree(props) {
     setNowBody: setNowBody
   });
   var layout = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_split_pane__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    style: {
+      overflow: "visible"
+    },
     className: "split",
     split: "vertical",
     minSize: 200,
@@ -88510,8 +88525,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_gmail__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-gmail */ "./node_modules/react-gmail/index.js");
-/* harmony import */ var _MakeTree__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MakeTree */ "./resources/js/components/MakeTree.jsx");
+/* harmony import */ var _MakeTree__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MakeTree */ "./resources/js/components/MakeTree.jsx");
+/* harmony import */ var react_gmail__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-gmail */ "./node_modules/react-gmail/index.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -88581,11 +88596,11 @@ function Top() {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return react_gmail__WEBPACK_IMPORTED_MODULE_2__["default"].getMessages(false, 30, "me");
+              return react_gmail__WEBPACK_IMPORTED_MODULE_3__["default"].getMessages(false, 30, "me");
 
             case 2:
               response = _context.sent;
-              mails = react_gmail__WEBPACK_IMPORTED_MODULE_2__["default"].normalizeData(response).map(function (mail) {
+              mails = react_gmail__WEBPACK_IMPORTED_MODULE_3__["default"].normalizeData(response).map(function (mail) {
                 var date = new Date(mail.date);
                 return {
                   from: mail.from,
@@ -88631,7 +88646,7 @@ function Top() {
     onClick: loginWithGoogle
   }, "login with google"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
     onClick: logoutFromGoogle
-  }, "logout from google"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_MakeTree__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, "logout from google"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_MakeTree__WEBPACK_IMPORTED_MODULE_2__["default"], {
     mails: mails
   }));
 }
@@ -88658,8 +88673,8 @@ function Top() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/suehiroyusuke/Documents/GitHub/gmail-visualizer/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/suehiroyusuke/Documents/GitHub/gmail-visualizer/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/shimalab/watanabe/ハッカソン2/gmail-visualizer/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/shimalab/watanabe/ハッカソン2/gmail-visualizer/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
