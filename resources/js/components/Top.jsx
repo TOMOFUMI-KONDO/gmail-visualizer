@@ -6,7 +6,6 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
 import SplitPane from "react-split-pane";
 import base64url from "base64url";
-// import gmailApi from "react-gmail";
 // import axios from "axios";
 
 var count = 1;
