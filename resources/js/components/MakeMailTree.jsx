@@ -5,7 +5,7 @@ function MakeMailTree(props) {
     const mailtp = props.mailtp;
 
     const setNowBody = props.setNowBody;
-    const tp = mailtp.map((mail) => <EachMail key={mail} mail={mail} setNowBody={setNowBody} />);
+    const tp = mailtp.map((mail, index) => <EachMail key={index} mail={mail} setNowBody={setNowBody} />);
 
     const result = tp;
     return result;

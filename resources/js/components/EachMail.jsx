@@ -48,8 +48,8 @@ function EachMail(props) {
     const eachBody = each.Body;
     const eachSub_temp = each.Subject;
     const setNowBody = props.setNowBody;
-    const eachSub = each.Subject.map((sub) => (
-        <DisplaySubject key={sub} sbj={sub} setNowBody={setNowBody} eachBody={eachBody} eachSub_temp={eachSub_temp} />
+    const eachSub = each.Subject.map((sub, index) => (
+        <DisplaySubject key={index} sbj={sub} setNowBody={setNowBody} eachBody={eachBody} eachSub_temp={eachSub_temp} />
     ));
     const mailIndex = (
         <TreeItem className={classes.person} nodeId={each.from + "1"} label={each.from}>
